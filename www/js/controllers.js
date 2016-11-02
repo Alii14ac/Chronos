@@ -1,5 +1,23 @@
 angular.module('starter.controllers', [])
 
+.controller('LoginCtrl', function($scope, $state, $ionicPopup, Auth){
+    $scope.data = {};
+    $scope.login = function(){
+       
+        Auth.signInWithEmailAndPassword($scope.data.email,$scope.datapassword)
+        .then(function(authData){
+            console.log(authData);
+            $state.go('tab.dash'); })
+        .catch(function(error){
+            console.log(error);
+            var alertPopup = $ionicPopup.alert({
+                title: "Login Failed!",
+                template: "Please check your credentials!"                
+            });    
+        });         
+    };    
+})
+
 .controller('DashCtrl', function($scope) {})
 
 .controller('ChatsCtrl', function($scope, Chats) {
@@ -26,3 +44,5 @@ angular.module('starter.controllers', [])
     enableFriends: true
   };
 });
+
+

@@ -1,5 +1,19 @@
 angular.module('starter.services', [])
 
+.factory('Auth', function(){
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDSJ3nHOVn-frvyhB2brmS0kdOu57ci0Fo",
+    authDomain: "chronos-c63b2.firebaseapp.com",
+    databaseURL: "https://chronos-c63b2.firebaseio.com",
+    storageBucket: "chronos-c63b2.appspot.com",
+    messagingSenderId: "1054527482628"
+  };
+  firebase.initializeApp(config);
+    
+  return firebase.auth();  
+})
+
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
@@ -48,3 +62,5 @@ angular.module('starter.services', [])
     }
   };
 });
+
+
