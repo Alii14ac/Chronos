@@ -18,13 +18,15 @@ angular.module('chronos', [
   'chronos.factories',
   'chronos.config',
 //  'chronos.views',
+  'firebase',
   'underscore',
   'ngMap',
   'ngResource',
   'ngCordova',
   'slugifier',
   'ionic.contrib.ui.tinderCards',
-  'youtube-embed'
+  'youtube-embed',
+
 ])
 
 .run(function($ionicPlatform, PushNotificationsService, $rootScope, $ionicConfig, $timeout) {

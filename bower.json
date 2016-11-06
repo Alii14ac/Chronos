@@ -13,7 +13,8 @@
     "ionic-contrib-tinder-cards": "*",
     "bourbon": "~4.2.3",
     "angular-youtube-mb": "~1.1.0",
-    "ngCordova": "~0.1.24-alpha"
+    "ngCordova": "~0.1.24-alpha",
+    "angularfire": "^2.1.0"
   },
   "resolutions": {
     "angular": ">=1.2.0 <1.5.0",
