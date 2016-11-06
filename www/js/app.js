@@ -8,16 +8,16 @@ angular.module('underscore', [])
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('your_app_name', [
+angular.module('chronos', [
   'ionic',
   'angularMoment',
-  'your_app_name.controllers',
-  'your_app_name.directives',
-  'your_app_name.filters',
-  'your_app_name.services',
-  'your_app_name.factories',
-  'your_app_name.config',
-//  'your_app_name.views',
+  'chronos.controllers',
+  'chronos.directives',
+  'chronos.filters',
+  'chronos.services',
+  'chronos.factories',
+  'chronos.config',
+//  'chronos.views',
   'underscore',
   'ngMap',
   'ngResource',
@@ -55,7 +55,7 @@ angular.module('your_app_name', [
     }
   });
   $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams){
-    if(toState.name.indexOf('app.feeds-categories') > -1)
+    if(toState.name.indexOf('app.timers-main') > -1)
     {
       // Restore platform default transition. We are just hardcoding android transitions to auth views.
       $ionicConfig.views.transition('platform');
@@ -146,41 +146,14 @@ angular.module('your_app_name', [
     }
   })
 
-  //LAYOUTS
-  .state('app.layouts', {
-    url: "/layouts",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/layouts/layouts.html"
-      }
-    }
-  })
-
-  .state('app.tinder-cards', {
-    url: "/layouts/tinder-cards",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/layouts/tinder-cards.html",
-        controller: 'TinderCardsCtrl'
-      }
-    }
-  })
-
-  .state('app.slider', {
-    url: "/layouts/slider",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/layouts/slider.html"
-      }
-    }
-  })
+ 
 
   //FEEDS
-  .state('app.feeds-categories', {
-    url: "/feeds-categories",
+  .state('app.timers-main', {
+    url: "/timers-main",
     views: {
       'menuContent': {
-        templateUrl: "views/app/feeds/feeds-categories.html",
+        templateUrl: "views/app/feeds/timers-main.html",
         controller: 'FeedsCategoriesCtrl'
       }
     }

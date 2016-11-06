@@ -1,4 +1,4 @@
-angular.module('your_app_name.factories', [])
+angular.module('chronos.factories', [])
 
 .factory('FeedLoader', function ($resource){
   return $resource('https://ajax.googleapis.com/ajax/services/feed/load', {}, {

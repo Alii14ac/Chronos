@@ -1,4 +1,4 @@
-angular.module('your_app_name.controllers', [])
+angular.module('chronos.controllers', [])
 
 .controller('AuthCtrl', function($scope, $ionicConfig) {
 
@@ -16,7 +16,7 @@ angular.module('your_app_name.controllers', [])
 //LOGIN
 .controller('LoginCtrl', function($scope, $state, $templateCache, $q, $rootScope) {
 	$scope.doLogIn = function(){
-		$state.go('app.feeds-categories');
+		$state.go('app.timers-main');
 	};
 
 	$scope.user = {};
@@ -39,13 +39,13 @@ angular.module('your_app_name.controllers', [])
 	$scope.user.email = "john@doe.com";
 
 	$scope.doSignUp = function(){
-		$state.go('app.feeds-categories');
+		$state.go('app.timers-main');
 	};
 })
 
 .controller('ForgotPasswordCtrl', function($scope, $state) {
 	$scope.recoverPassword = function(){
-		$state.go('app.feeds-categories');
+		$state.go('app.timers-main');
 	};
 
 	$scope.user = {};
@@ -211,7 +211,7 @@ angular.module('your_app_name.controllers', [])
 .controller('FeedsCategoriesCtrl', function($scope, $http) {
 	$scope.feeds_categories = [];
 
-	$http.get('feeds-categories.json').success(function(response) {
+	$http.get('timers-main.json').success(function(response) {
 		$scope.feeds_categories = response;
 	});
 })
@@ -222,7 +222,7 @@ angular.module('your_app_name.controllers', [])
 
 	$scope.categoryId = $stateParams.categoryId;
 
-	$http.get('feeds-categories.json').success(function(response) {
+	$http.get('timers-main.json').success(function(response) {
 		var category = _.find(response, {id: $scope.categoryId});
 		$scope.categoryTitle = category.title;
 		$scope.category_sources = category.feed_sources;
@@ -238,7 +238,7 @@ angular.module('your_app_name.controllers', [])
 
 	$scope.doRefresh = function() {
 
-		$http.get('feeds-categories.json').success(function(response) {
+		$http.get('timers-main.json').success(function(response) {
 
 			$ionicLoading.show({
 				template: 'Loading entries...'
