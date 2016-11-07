@@ -1,259 +1,99 @@
 // Ionic Starter App
 
-angular.module('underscore', [])
-.factory('_', function() {
-  return window._; // assumes underscore has already been loaded on the page
-});
-
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('chronos', [
-  'ionic',
-  'angularMoment',
-  'chronos.controllers',
-  'chronos.directives',
-  'chronos.filters',
-  'chronos.services',
-  'chronos.factories',
-  'chronos.config',
-//  'chronos.views',
-  'firebase',
-  'underscore',
-  'ngMap',
-  'ngResource',
-  'ngCordova',
-  'slugifier',
-  'ionic.contrib.ui.tinderCards',
-  'youtube-embed',
+// 'starter.services' is found in services.js
+// 'starter.controllers' is found in controllers.js
+angular.module('starter', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.bar', 'starter.controllers', 'starter.services'])
 
-])
-
-.run(function($ionicPlatform, PushNotificationsService, $rootScope, $ionicConfig, $timeout) {
-
-  $ionicPlatform.on("deviceready", function(){
+.run(function($ionicPlatform) {
+  $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if(window.cordova && window.cordova.plugins.Keyboard) {
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+      cordova.plugins.Keyboard.disableScroll(true);
+
     }
-    if(window.StatusBar) {
+    if (window.StatusBar) {
+      // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    PushNotificationsService.register();
   });
-
-  // This fixes transitions for transparent background views
-  $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
-    if(toState.name.indexOf('auth.walkthrough') > -1)
-    {
-      // set transitions to android to avoid weird visual effect in the walkthrough transitions
-      $timeout(function(){
-        $ionicConfig.views.transition('android');
-        $ionicConfig.views.swipeBackEnabled(false);
-      	console.log("setting transition to android and disabling swipe back");
-      }, 0);
-    }
-  });
-  $rootScope.$on("$stateChangeSuccess", function(event, toState, toParams, fromState, fromParams){
-    if(toState.name.indexOf('app.timers-main') > -1)
-    {
-      // Restore platform default transition. We are just hardcoding android transitions to auth views.
-      $ionicConfig.views.transition('platform');
-      // If it's ios, then enable swipe back again
-      if(ionic.Platform.isIOS())
-      {
-        $ionicConfig.views.swipeBackEnabled(true);
-      }
-    	console.log("enabling swipe back and restoring transition to platform default", $ionicConfig.views.transition());
-    }
-  });
-
-  $ionicPlatform.on("resume", function(){
-    PushNotificationsService.register();
-  });
-
 })
 
+.config(function($stateProvider, $urlRouterProvider) {
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  // Ionic uses AngularUI Router which uses the concept of states
+  // Learn more here: https://github.com/angular-ui/ui-router
+  // Set up the various states which the app can be in.
+  // Each state's controller can be found in controllers.js
   $stateProvider
 
-  //INTRO
-  .state('auth', {
-    url: "/auth",
-    templateUrl: "views/auth/auth.html",
-    abstract: true,
-    controller: 'AuthCtrl'
-  })
-
-  .state('auth.walkthrough', {
-    url: '/walkthrough',
-    templateUrl: "views/auth/walkthrough.html"
-  })
-
-  .state('auth.login', {
+    .state('login', {
     url: '/login',
-    templateUrl: "views/auth/login.html",
+    templateUrl: 'templates/login.html',
     controller: 'LoginCtrl'
   })
-
-  .state('auth.signup', {
-    url: '/signup',
-    templateUrl: "views/auth/signup.html",
-    controller: 'SignupCtrl'
-  })
-
-  .state('auth.forgot-password', {
-    url: "/forgot-password",
-    templateUrl: "views/auth/forgot-password.html",
-    controller: 'ForgotPasswordCtrl'
-  })
-
-  .state('app', {
-    url: "/app",
+  // setup an abstract state for the tabs directive
+    .state('tab', {
+    url: '/tab',
     abstract: true,
-    templateUrl: "views/app/side-menu.html",
-    controller: 'AppCtrl'
+    templateUrl: 'templates/tabs.html'
   })
 
-  //MISCELLANEOUS
-  .state('app.miscellaneous', {
-    url: "/miscellaneous",
+  // Each tab has its own nav history stack:
+
+  .state('tab.dash', {
+    url: '/dash',
     views: {
-      'menuContent': {
-        templateUrl: "views/app/miscellaneous/miscellaneous.html"
+      'tab-dash': {
+        templateUrl: 'templates/tab-dash.html',
+        controller: 'DashCtrl'
       }
     }
   })
 
-  .state('app.maps', {
-    url: "/miscellaneous/maps",
+  .state('tab.foods', {
+      url: '/foods',
+      views: {
+        'tab-foods': {
+          templateUrl: 'templates/tab-foods.html',
+          controller: 'FoodsCtrl'
+        }
+      }
+    })
+    .state('tab.add', {
+      url:'/add',
+      views:{
+        'tab-foods':{
+          templateUrl:'templates/tab-add.html',
+          controller:'AddCtrl'
+        }
+      }
+    })
+    .state('tab.food-detail', {
+      url: '/foods/:foodId',
+      views: {
+        'tab-foods': {
+          templateUrl: 'templates/food-detail.html',
+          controller: 'FoodDetailCtrl'
+        }
+      }
+    })
+
+  .state('tab.account', {
+    url: '/account',
     views: {
-      'menuContent': {
-        templateUrl: "views/app/miscellaneous/maps.html",
-        controller: 'MapsCtrl'
+      'tab-account': {
+        templateUrl: 'templates/tab-account.html',
+        controller: 'AccountCtrl'
       }
     }
-  })
-
-  .state('app.image-picker', {
-    url: "/miscellaneous/image-picker",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/miscellaneous/image-picker.html",
-        controller: 'ImagePickerCtrl'
-      }
-    }
-  })
-
- 
-
-  //FEEDS
-  .state('app.timers-main', {
-    url: "/timers-main",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/feeds/timers-main.html",
-        controller: 'FeedsCategoriesCtrl'
-      }
-    }
-  })
-
-  .state('app.category-feeds', {
-    url: "/category-feeds/:categoryId",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/feeds/category-feeds.html",
-        controller: 'CategoryFeedsCtrl'
-      }
-    }
-  })
-
-  .state('app.feed-entries', {
-    url: "/feed-entries/:categoryId/:sourceId",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/feeds/feed-entries.html",
-        controller: 'FeedEntriesCtrl'
-      }
-    }
-  })
-
-  //WORDPRESS
-  .state('app.wordpress', {
-    url: "/wordpress",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/wordpress/wordpress.html",
-        controller: 'WordpressCtrl'
-      }
-    }
-  })
-
-  .state('app.post', {
-    url: "/wordpress/:postId",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/wordpress/wordpress_post.html",
-        controller: 'WordpressPostCtrl'
-      }
-    },
-    resolve: {
-      post_data: function(PostService, $ionicLoading, $stateParams) {
-        $ionicLoading.show({
-      		template: 'Loading post ...'
-      	});
-
-        var postId = $stateParams.postId;
-        return PostService.getPost(postId);
-      }
-    }
-  })
-
-  //OTHERS
-  .state('app.settings', {
-    url: "/settings",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/settings.html",
-        controller: 'SettingsCtrl'
-      }
-    }
-  })
-
-  .state('app.forms', {
-    url: "/forms",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/forms.html"
-      }
-    }
-  })
-
-  .state('app.profile', {
-    url: "/profile",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/profile.html",
-        controller: "ProfileCtrl"
-      }
-    }
-  })
-
-  .state('app.bookmarks', {
-    url: "/bookmarks",
-    views: {
-      'menuContent': {
-        templateUrl: "views/app/bookmarks.html",
-        controller: 'BookMarksCtrl'
-      }
-    }
-  })
-
-;
+  });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/auth/walkthrough');
+  $urlRouterProvider.otherwise('/login');
+
 });

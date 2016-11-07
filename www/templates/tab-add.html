@@ -1,0 +1,30 @@
+<ion-view view-title="Add Food">
+    <ion-nav-buttons side="left">
+        <button class="button button-clear" ng-click="close()"></button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button button-icon ion-ios-upload" ng-click="confirm()"></button>
+    </ion-nav-buttons>
+    <ion-content>
+        <div class="list list-inset">
+            <label class="item item-input item-floating-label">
+            <span class="input-label">Food Type</span>
+            <input type="text" placeholder="Food Category" ng-model="newFood.cat">
+            </label>
+            <label class="item item-input item-floating-label">
+            <span class="input-label">Food Name</span>
+            <input type="text" placeholder="Food Name" ng-model="newFood.name">
+            </label>
+            <label class="item item-input item-floating-label">
+            <span class="input-label">Calories (per oz)</span>
+            <input type="number"placeholder="Calories (per oz)" ng-model="newFood.calories">
+            </label>
+            <label class="item item-input">
+            <span class="input-label">Food Image</span>
+            <button class="button icon-left ion-ios-camera-outline button-positive" ng-click="takePhoto()">
+            Take Photo
+            </button>
+            </label>
+        </div>
+    </ion-content>
+</ion-view>

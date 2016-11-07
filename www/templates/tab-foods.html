@@ -1,0 +1,25 @@
+<ion-view view-title="Foods">
+  <ion-nav-buttons side="right" ng-show="false">
+    <button class="button button-icon ion-compose" ng-click="add('tab.add')">
+    </button>
+    <button class="button button-icon icon ion-ios-search-strong" ng-click="showFilterBar()">
+    </button>
+  </ion-nav-buttons>
+  <ion-content>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="food in foods" type="item-text-wrap" href="#/tab/foods/{{food.id}}">
+        <img ng-src="{{food.img}}">
+        <h2>{{food.name}}</h2>
+        <p>{{food.calories}} Calories per oz</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(food)">
+          Delete
+        </ion-option-button>
+        <ion-option-button class="icon-left ion-fork button-energized" ng-click="showPopup(food)">
+          Eat
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
