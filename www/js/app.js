@@ -1,11 +1,11 @@
-// Ionic Starter App
+// Ionic chronos App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
+// 'chronos' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-// 'starter.services' is found in services.js
-// 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.bar', 'starter.controllers', 'starter.services'])
+// 'chronos.services' is found in services.js
+// 'chronos.controllers' is found in controllers.js
+angular.module('chronos', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.bar', 'chronos.controllers', 'chronos.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -45,21 +45,21 @@ angular.module('starter', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.b
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.new', {
+    url: '/new',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
+      'tab-new': {
+        templateUrl: 'templates/tab-new.html',
         controller: 'DashCtrl'
       }
     }
   })
 
-  .state('tab.foods', {
-      url: '/foods',
+  .state('tab.timers', {
+      url: '/timers',
       views: {
-        'tab-foods': {
-          templateUrl: 'templates/tab-foods.html',
+        'tab-timers': {
+          templateUrl: 'templates/tab-timers.html',
           controller: 'FoodsCtrl'
         }
       }
@@ -67,7 +67,7 @@ angular.module('starter', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.b
     .state('tab.add', {
       url:'/add',
       views:{
-        'tab-foods':{
+        'tab-timers':{
           templateUrl:'templates/tab-add.html',
           controller:'AddCtrl'
         }
@@ -76,18 +76,18 @@ angular.module('starter', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.b
     .state('tab.food-detail', {
       url: '/foods/:foodId',
       views: {
-        'tab-foods': {
+        'tab-timers': {
           templateUrl: 'templates/food-detail.html',
           controller: 'FoodDetailCtrl'
         }
       }
     })
 
-  .state('tab.account', {
-    url: '/account',
+  .state('tab.stat', {
+    url: '/stat',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
+      'tab-stat': {
+        templateUrl: 'templates/tab-stat.html',
         controller: 'AccountCtrl'
       }
     }

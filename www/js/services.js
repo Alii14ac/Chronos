@@ -1,4 +1,4 @@
- angular.module('starter.services', [])
+ angular.module('chronos.services', [])
 
 .factory('Auth', function(){
   var config = {

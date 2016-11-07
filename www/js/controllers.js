@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('chronos.controllers', [])
 
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, Auth){
   $scope.data={};
@@ -6,7 +6,7 @@ angular.module('starter.controllers', [])
     Auth.signInWithEmailAndPassword($scope.data.email, $scope.data.password)
     .then(function(authData){
         console.log(authData);
-        $state.go('tab.dash');
+        $state.go('tab.timers');
       }).catch(function(error) {
         console.log(error);
         varalertPopup=$ionicPopup.alert({
