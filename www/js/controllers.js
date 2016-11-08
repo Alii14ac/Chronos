@@ -107,11 +107,13 @@ angular.module('chronos.controllers', [])
 	}
 
 
+
+
 })
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser, Timers) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval, Foods, CurrentUser, Timers, Clock) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -123,9 +125,50 @@ angular.module('chronos.controllers', [])
 
 
 
-	$scope.test = function(){
-		console.log($scope.timers)
-	};
+
+	//TIME FUNCTIONS
+
+	$scope.counter = 0;
+	$scope.runClock = null;
+
+	function displayTime() {
+		$scope.time = moment().hour(0).minute(0).second($scope.counter++).format('HH : mm : ss');
+	}
+
+	$scope.start = function() {
+		if($scope.runClock==null)
+		{
+			$scope.runClock = $interval(displayTime, 1000);
+
+		}
+	}
+
+	$scope.stop = function() {
+		$interval.cancel($scope.runClock);
+		$scope.runClock=null;
+	}
+
+	$scope.reset = function() {
+		$scope.counter = 0;
+		displayTime();
+	}
+
+	$scope.state = 0;
+
+	$scope.clock = function(){
+		if($scope.state == 0){
+			console.log("timer started")
+			$scope.start();
+			$scope.state = 1;
+		}else if($scope.state == 1){
+			console.log("timer stoped")
+			$scope.stop();
+			$scope.state = 0;
+		}
+
+	}
+
+
 
 
 })

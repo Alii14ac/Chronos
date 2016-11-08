@@ -2,6 +2,8 @@
     "jscodehints.detectedExclusions": [
         "/Users/alexanderlindkjaer/Ionic/chronos/plugins/cordova-plugin-splashscreen/src/browser/SplashScreenProxy.js",
         "/Users/alexanderlindkjaer/Ionic/chronos/plugins/cordova-plugin-statusbar/src/windows/StatusBarProxy.js",
-        "../angular-chart.js"
+        "../angular-chart.js",
+        "/Users/alexanderlindkjaer/Ionic/chronos/www/lib/chart.js/src/chart.js",
+        "/Users/alexanderlindkjaer/Ionic/chronos/plugins/ionic-plugin-keyboard/www/ios/keyboard.js"
     ]
 }

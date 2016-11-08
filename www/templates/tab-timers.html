@@ -38,7 +38,7 @@
 
 		<div class=" has-header padding">
 			<buttom ng-click="test()" class="button button-block button-calm">First</buttom>
-			<buttom ng-click="testRead()" class="button button-block button-energized">Second</buttom>
+			<buttom ng-click="clock()" class="button button-block button-energized">{{time}}</buttom>
 			<buttom ng-click="writeUserId()" class="button button-block button-royal">Third</buttom>
 			<!--	repeat button		-->
 			<buttom ng-repeat="timer in timers" class="button button-block button-royal">{{timer.$id}}</buttom>
