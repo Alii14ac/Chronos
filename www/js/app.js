@@ -72,7 +72,7 @@ angular.module('chronos', [
       views: {
         'tab-timers': {
           templateUrl: 'templates/tab-timers.html',
-          controller: 'FireCtrl'
+          controller: 'TimersCtrl'
         }
       }
     })

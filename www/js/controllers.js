@@ -73,7 +73,7 @@ angular.module('chronos.controllers', [])
 //SIGNUP END
 
 //NEW TIMER CONTROLLER
-	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup) {
+	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup, $state) {
 	$scope.data = {};
 
 	$scope.data.elapsedTime = 0;
@@ -90,6 +90,11 @@ angular.module('chronos.controllers', [])
 				elapsedTime: 0,
 				dataCreated: $scope.data.date
 			});
+			varalertPopup=$ionicPopup.alert({
+				title: $scope.data.name+" timer added",
+				template: ''
+			});
+			$state.go('tab.timers');
 
 		}else{
 			varalertPopup=$ionicPopup.alert({
@@ -105,36 +110,26 @@ angular.module('chronos.controllers', [])
 })
 //NEW CONTROLLER END
 
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser) {
+//TIMERS CONTROLLER
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser, Timers) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
 	// listen for the $ionicView.enter event:
 	//
-	//$scope.$on('$ionicView.enter', function(e) {
-	//});
+	$scope.$on('$ionicView.enter', function(e) {
+		$scope.timers = Timers.all();
+	});
 
-	$scope.testWrite = function(){
-		console.log("testWrite function reached");
-		$scope.testWrite.data = {};
-		$scope.testWrite.data.name = "NameTest1"
-		$scope.testWrite.data.email = "Email@test.dk1"
-		$scope.testWrite.writeUserData = function() {
-			console.log("data set");
-			firebase.database().ref('/users/email').set({
-				username1: $scope.data.testWrite.name,
-				email1: $scope.data.testWrite.email
-			});
-		};
-	};
+
 
 	$scope.test = function(){
-		console.log("test function reached!");
+		console.log($scope.timers)
 	};
-
 
 
 })
+//TIMERS CONTROLLER END
 
 	.controller('FireCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser) {
 	// With the new view caching in Ionic, Controllers are only called
