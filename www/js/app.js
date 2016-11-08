@@ -62,7 +62,7 @@ angular.module('chronos', [
     views: {
       'tab-new': {
         templateUrl: 'templates/tab-new.html',
-        controller: 'DashCtrl'
+        controller: 'NewCtrl'
       }
     }
   })

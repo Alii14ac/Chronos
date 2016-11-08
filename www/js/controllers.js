@@ -47,8 +47,9 @@ angular.module('chronos.controllers', [])
 			console.log(authData);
 			console.log("user created")
 			firebase.database().ref("users").child(authData.uid).update({
-				email: authData.email
-		});
+				email: authData.email,
+				timers: 0
+			});
 
 			varalertPopup=$ionicPopup.alert({
 				title: 'Succes!',
@@ -71,26 +72,38 @@ angular.module('chronos.controllers', [])
 })
 //SIGNUP END
 
-	.controller('DashCtrl', function($scope, $timeout, Foods) {
-	// $scope.plotData = Foods.getPlotData();
+//NEW TIMER CONTROLLER
+	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup) {
+	$scope.data = {};
 
-	// $scope.refreshDiaries=function() {
-	//   $timeout(function() {
-	//   $scope.plotData=Foods.getPlotData();
-	//   $scope.$broadcast('scroll.refreshComplete');
-	//   }, 1000);
-	// }
+	$scope.data.elapsedTime = 0;
 
-	firebase.database().ref('diaries').on('value', function(snapshot) {
-		var tmp=snapshot.val();
-		var diariesArray=[];
-		for(var i in tmp){
-			diariesArray.push(tmp[i]);
-		}
-		$scope.plotData = Foods.getPlotData(diariesArray);
-	});
-	// $
+	//add new timer to firebase
+	$scope.addNewTimer = function(){
+		console.log("addNewTimer function reached ")
+
+		if($scope.data.name != null){
+			$scope.data.date = new Date();
+
+			//firebase update
+			firebase.database().ref("users/"+CurrentUser.uid+'/timers').child($scope.data.name).update({
+				elapsedTime: 0,
+				dataCreated: $scope.data.date
+			});
+
+		}else{
+			varalertPopup=$ionicPopup.alert({
+				title: 'Error',
+				template: 'Please check you have a name set!'
+			});
+		};
+
+
+	}
+
+
 })
+//NEW CONTROLLER END
 
 	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser) {
 	// With the new view caching in Ionic, Controllers are only called
@@ -171,37 +184,55 @@ angular.module('chronos.controllers', [])
 		var currentUser = CurrentUser.uid;
 		console.log("writeUserId function reached");
 		firebase.database().ref("users").child(CurrentUser.uid).update({
-				email: CurrentUser.email
+			email: CurrentUser.email
 		});
 	}
 
-	})
+	//SNAPSHOT FROM DATABASE
+	// $scope.refreshDiaries=function() {
+	//   $timeout(function() {
+	//   $scope.plotData=Foods.getPlotData();
+	//   $scope.$broadcast('scroll.refreshComplete');
+	//   }, 1000);
+	// }
+
+	firebase.database().ref('diaries').on('value', function(snapshot) {
+		var tmp=snapshot.val();
+		var diariesArray=[];
+		for(var i in tmp){
+			diariesArray.push(tmp[i]);
+		}
+		$scope.plotData = Foods.getPlotData(diariesArray);
+	});
+	// $
+
+})
 
 
 
-		.controller('AddCtrl', function($scope, $state, Foods){
-			$scope.foods=Foods.all();
-			$scope.newFood={
-				id:$scope.foods.length,
-				name:'',
-				cat:'',
-				img:'',
-				calories: 0
-			}
-			$scope.confirm=function () {
-				Foods.add($scope.newFood);
-				$scope.close();
-			};
-			$scope.close=function() {
-				$state.go('tab.foods');
-			};
-		})
-			.controller('FoodDetailCtrl', function($scope, $stateParams, Foods) {
-			$scope.food = Foods.get($stateParams.foodId);
-		})
+	.controller('AddCtrl', function($scope, $state, Foods){
+	$scope.foods=Foods.all();
+	$scope.newFood={
+		id:$scope.foods.length,
+		name:'',
+		cat:'',
+		img:'',
+		calories: 0
+	}
+	$scope.confirm=function () {
+		Foods.add($scope.newFood);
+		$scope.close();
+	};
+	$scope.close=function() {
+		$state.go('tab.foods');
+	};
+})
+	.controller('FoodDetailCtrl', function($scope, $stateParams, Foods) {
+	$scope.food = Foods.get($stateParams.foodId);
+})
 
-			.controller('AccountCtrl', function($scope) {
-			$scope.settings = {
-				enableFriends: true
-			};
-		});
+	.controller('AccountCtrl', function($scope) {
+	$scope.settings = {
+		enableFriends: true
+	};
+});

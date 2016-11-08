@@ -14,3 +14,12 @@ ion-content{
 	border-radius: 3%;
 
 }
+
+.add-button{
+	margin: 1.5% 0%;
+}
+
+.white{
+	background-color: rgb(245,245,245) !important ;
+
+}
