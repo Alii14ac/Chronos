@@ -1,19 +1,21 @@
 <ion-view title="Login">
-    <ion-content>
-        <div class="list list-inset">
-        <label class="item item-input item-floating-label">
-        <span class="input-label">Email</span>
-        <input type="text" placeholder="Email" ng-model="data.email">
-        </label>
-        <label class="item item-input item-floating-label">
-        <span class="input-label">Password</span>
-        <input type="password" placeholder="Password" ng-model="data.password">
-        </label>
-        <button ng-click="login()" class="button button-full button-dark">
-        Login
-        </button>
-				<p class="text-center">Not a user yet?</p>
-				<p class="text-center"><a ng-click="signup()">Sign Up</a></p>
-        </div>
-    </ion-content>
+	<ion-content>
+		<div class="list list-inset">
+			<label class="item item-input item-floating-label">
+				<span class="input-label">Email</span>
+				<input type="text" placeholder="Email" ng-model="data.email">
+			</label>
+			<label class="item item-input item-floating-label">
+				<span class="input-label">Password</span>
+				<input type="password" placeholder="Password" ng-model="data.password">
+			</label>
+			<div class="text-center">
+				<button ng-click="login()" class="button button-center button-positive button-dark login-button">
+					Login
+				</button>
+			</div>
+			<p class="text-center">Not a user yet?</p>
+			<p class="text-center"><a ng-click="signup()">Sign Up</a></p>
+		</div>
+	</ion-content>
 </ion-view>
