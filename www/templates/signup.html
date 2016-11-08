@@ -1,4 +1,4 @@
-<ion-view title="Login">
+<ion-view title="Signup">
     <ion-content>
         <div class="list list-inset">
         <label class="item item-input item-floating-label">
@@ -9,11 +9,13 @@
         <span class="input-label">Password</span>
         <input type="password" placeholder="Password" ng-model="data.password">
         </label>
-        <button ng-click="login()" class="button button-full button-dark">
-        Login
+				 <label class="item item-input item-floating-label">
+        <span class="input-label">Repeat Password</span>
+        <input type="password" placeholder="Repeat Password" ng-model="data.passwordRepeat">
+        </label>
+        <button ng-click="signup()" class="button button-full button-dark">
+        Sign Up
         </button>
-				<p class="text-center">Not a user yet?</p>
-				<p class="text-center"><a ng-click="signup()">Sign Up</a></p>
         </div>
     </ion-content>
 </ion-view>

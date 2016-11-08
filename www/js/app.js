@@ -5,7 +5,13 @@
 // the 2nd parameter is an array of 'requires'
 // 'chronos.services' is found in services.js
 // 'chronos.controllers' is found in controllers.js
-angular.module('chronos', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.bar', 'chronos.controllers', 'chronos.services'])
+angular.module('chronos', [
+	'ionic',
+	'firebase',
+	'chart.js',
+	'jett.ionic.filter.bar', 'chronos.controllers',
+	'chronos.services'
+])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -41,6 +47,12 @@ angular.module('chronos', ['ionic', 'firebase', 'chart.js', 'jett.ionic.filter.b
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
+  })
+
+	 .state('signup', {
+    url: '/signup',
+    templateUrl: 'templates/signup.html',
+    controller: 'SignupCtrl'
   })
 
   // Each tab has its own nav history stack:

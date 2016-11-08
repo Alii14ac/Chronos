@@ -1,7 +1,10 @@
 angular.module('chronos.controllers', [])
 
+//LOGIN CONTROLLER
 .controller('LoginCtrl', function($scope, $state, $ionicPopup, Auth){
   $scope.data={};
+
+	//AUTH login
   $scope.login=function(){
     Auth.signInWithEmailAndPassword($scope.data.email, $scope.data.password)
     .then(function(authData){
@@ -15,7 +18,50 @@ angular.module('chronos.controllers', [])
     });
   });
   };
+
+	//go to signup
+	$scope.signup=function(){
+		$state.go('signup');
+	}
 })
+	//LOGIN END
+
+//SIGNUP CONTROLLER
+.controller('SignupCtrl', function($scope, $state, $ionicPopup, $ionicPopup, Auth){
+  $scope.data={};
+
+	$scope.signup = function(){
+
+		var email = $scope.data.email;
+		var password = $scope.data.password
+		//TODO: check for repeat password
+
+		Auth.createUserWithEmailAndPassword(email, password)
+    .then(function(authData){
+
+        console.log(authData);
+				console.log("user created")
+				varalertPopup=$ionicPopup.alert({
+        title: 'Succes!',
+        template: 'User created'
+    });
+
+        $state.go('login');
+
+      }).catch(function(error) {
+        console.log(error);
+        varalertPopup=$ionicPopup.alert({
+        title: 'Sign up failed!',
+        template: 'Please check your credentials!'
+    });
+  });
+	};
+
+
+
+})
+//SIGNUP END
+
 .controller('DashCtrl', function($scope, $timeout, Foods) {
   // $scope.plotData = Foods.getPlotData();
 
