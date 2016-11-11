@@ -119,54 +119,97 @@ angular.module('chronos.controllers', [])
 	// To listen for when this page is active (for example, to refresh data),
 	// listen for the $ionicView.enter event:
 	//
-	$scope.$on('$ionicView.enter', function(e) {
-		$scope.timers = Timers.all();
-	});
+	//	$scope.$on('$ionicView.loaded', function(e) {
+	//	});
 
 
+	$scope.timers = Timers.all();
 
+
+	$scope.test2 = function(index){
+		for (var i = 0; i < $scope.timers.length; ++i){
+			$scope.timers[i].counter = 0;
+			$scope.timers[i].runClock = null;
+			$scope.timers[i].state = 0;
+			console.log("loop "+i);
+		}
+		console.log("ready to time repeated buttons");
+
+	}
 
 	//TIME FUNCTIONS
+	$scope.clock = function(index){
 
-	$scope.counter = 0;
-	$scope.runClock = null;
+		//workaround for making the loop run
+		if ($scope.timers[index].counter == null){
+			//for (var i = 0; i < $scope.timers.length; ++i){
+			$scope.timers[index].counter = 0;
+			$scope.timers[index].runClock = null;
+			$scope.timers[index].state = 0;
+			//}
+		}
+		//making sure only one timer is active
+		for (var i = 0; i < $scope.timers.length; ++i){
+			//			$scope.timers[index].counter = 0;
+			//			$scope.timers[index].runClock = null;
+			//			$scope.timers[index].state = 0;
+			if($scope.timers[i].state == 1){
+				if($scope.timers[index] != $scope.timers[i]){
+					console.log("another timer is running");
+					$scope.stop(i);
+				}
 
-	function displayTime() {
-		$scope.time = moment().hour(0).minute(0).second($scope.counter++).format('HH : mm : ss');
-	}
-
-	$scope.start = function() {
-		if($scope.runClock==null)
-		{
-			$scope.runClock = $interval(displayTime, 1000);
+			}
 
 		}
-	}
 
-	$scope.stop = function() {
-		$interval.cancel($scope.runClock);
-		$scope.runClock=null;
-	}
 
-	$scope.reset = function() {
-		$scope.counter = 0;
-		displayTime();
-	}
 
-	$scope.state = 0;
+		function displayTime() {
+			$scope.timers[index].time = moment().hour(0).minute(0).second($scope.timers[index].counter++).format('HH : mm : ss');
+		}
 
-	$scope.clock = function(){
-		if($scope.state == 0){
+
+		$scope.start = function() {
+			if($scope.timers[index].runClock==null)
+			{
+
+				$scope.timers[index].runClock = $interval(displayTime, 1000);
+				$scope.timers[index].state = 1;
+
+			}
+		}
+
+		$scope.stop = function(index) {
+			$interval.cancel($scope.timers[index].runClock);
+			$scope.timers[index].runClock=null;
+			$scope.timers[index].state = 0;
+		}
+
+		$scope.reset = function() {
+			$scope.timers[index].counter = 0;
+			displayTime();
+		}
+
+
+
+
+		if($scope.timers[index].state == 0){
 			console.log("timer started")
 			$scope.start();
-			$scope.state = 1;
-		}else if($scope.state == 1){
+
+		}else if($scope.timers[index].state == 1){
 			console.log("timer stoped")
-			$scope.stop();
-			$scope.state = 0;
+			$scope.stop(index);
+
 		}
 
+
+
+
+
 	}
+
 
 
 
