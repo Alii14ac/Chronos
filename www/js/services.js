@@ -13,27 +13,83 @@ angular.module('chronos.services', [])
 })
 
 
+	.factory('Database',function(CurrentUser, $ionicPopup, $state){
+
+		return {
+		//NEW TIMER	
+		newTimer: function(name, color) {
+			console.log("addNewTimer function reached ")
+
+		if(name != null){
+			var date = new Date();
+
+			// users timer entry.
+			var timerData = {
+				color: color,
+				dateCreated: date,
+				name: name
+			};
+			//timers data
+			var timersData = {};
+			timersData[date] = 0;
+
+			// Get a key for a new Post.
+  			var newPostKey = firebase.database().ref("users/"+CurrentUser.uid).child('timers').push().key
+
+			  // Write the new post's data simultaneously in the posts list and the user's post list.
+			var updates = {};
+			updates["users/"+CurrentUser.uid+'/timers/' + newPostKey] = timerData;
+			updates['/timers/' + newPostKey] = timersData;
+
+			firebase.database().ref().update(updates);
+
+			varalertPopup=$ionicPopup.alert({
+				title: timerData.name+" timer added",
+				template: ''
+			});
+			$state.go('tab.timers');
+
+		}else{
+			console.log("no name set, couldnt set new timer")
+			varalertPopup=$ionicPopup.alert({
+				title: 'Error',
+				template: 'Please check you have a name set!'
+			});
+		};
+
+		},
+		//ADD TIME ON TIMER STOP
+		addTime: function(time, timerKey){
+
+			var date = new Date();
+			//time data
+			var timersData = {};
+			timersData[date] = time;
+
+			var updates = {};
+			updates['/timers/' + timerKey] = timersData;
+
+			firebase.database().ref('timers/'+timerKey+'/').update(timersData);
+			console.log(timerKey +' : '+time);
+
+		// 	firebase.database().ref("users").child(CurrentUser.uid).update({
+		// 	email: CurrentUser.email
+		// });
+
+		}
+
+	}
+
+
+	})
+
+
 	.factory('Clock', function($interval){
 
 	var counter;
 	var start;
 
-	var timercounter  = function(state){
-
-		counter = 0;
-
-		// start the counter
-		start = $interval(function() {
-			// increment seconds
-			counter++;
-			// if zero, stop $interval and show the popup
-			console.log(counter)
-			if (state == "stop"){
-				$interval.cancel(start);
-
-			}
-		},1000,0); // invoke every 1 second
-	};
+	
 
 	return {
 		start: function(state) {

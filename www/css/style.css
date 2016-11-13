@@ -20,6 +20,52 @@ ion-content{
 }
 
 .white{
-	background-color: rgb(245,245,245) !important ;
+	background-color: rgb(255,255,255) !important ;
 
+}
+
+.timer{
+	display: inline;
+	left:0;
+	right:0;
+	margin-left:auto;
+	margin-right:auto;
+	
+}
+
+.timer-left{
+	float: left;
+	font-size: 80%;
+	border: solid 1px white;
+	border-radius: 10px;
+	padding: 0px 4px;
+	height: 35px;
+	line-height: 35px;
+	margin-top: 4.5px;
+	
+	
+	
+	
+	
+}
+
+.timer-center{
+	
+	text-transform: capitalize;
+	position: absolute;
+	
+	
+}
+
+.timer-right{
+	text-align: right;
+	float: right;
+
+}
+
+.button-color {
+	
+	display: block;
+	
+	
 }

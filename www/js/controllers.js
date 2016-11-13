@@ -32,13 +32,14 @@ angular.module('chronos.controllers', [])
 //LOGIN END
 
 //SIGNUP CONTROLLER
-	.controller('SignupCtrl', function($scope, $state, $ionicPopup, $ionicPopup, Auth, CurrentUser){
+	.controller('SignupCtrl', function($scope, $state, $ionicPopup, Auth, CurrentUser){
 	$scope.data={};
 
 	$scope.signup = function(){
 
 		var email = $scope.data.email;
 		var password = $scope.data.password
+		var name = $scope.data.name
 		//TODO: check for repeat password
 
 		Auth.createUserWithEmailAndPassword(email, password)
@@ -48,7 +49,9 @@ angular.module('chronos.controllers', [])
 			console.log("user created")
 			firebase.database().ref("users").child(authData.uid).update({
 				email: authData.email,
-				timers: 0
+				timers: 0,
+				group: 0,
+				name: name
 			});
 
 			varalertPopup=$ionicPopup.alert({
@@ -73,38 +76,48 @@ angular.module('chronos.controllers', [])
 //SIGNUP END
 
 //NEW TIMER CONTROLLER
-	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup, $state) {
+	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup, $state, Database) {
 	$scope.data = {};
 
 	$scope.data.elapsedTime = 0;
+	$scope.data.buttonColor = "button-calm";
+	$scope.data.color = "calm";
 
-	//add new timer to firebase
-	$scope.addNewTimer = function(){
-		console.log("addNewTimer function reached ")
-
-		if($scope.data.name != null){
-			$scope.data.date = new Date();
-
-			//firebase update
-			firebase.database().ref("users/"+CurrentUser.uid+'/timers').child($scope.data.name).update({
-				elapsedTime: 0,
-				dataCreated: $scope.data.date
-			});
-			varalertPopup=$ionicPopup.alert({
-				title: $scope.data.name+" timer added",
-				template: ''
-			});
-			$state.go('tab.timers');
-
-		}else{
-			varalertPopup=$ionicPopup.alert({
-				title: 'Error',
-				template: 'Please check you have a name set!'
-			});
-		};
-
+	$scope.colorSwitch = function(){
+		
+	switch($scope.data.color){
+		case "positive":
+			$scope.data.buttonColor = "button-positive";
+			break;
+		case "calm":
+			$scope.data.buttonColor = "button-calm";
+			break;
+		case "balanced":
+			$scope.data.buttonColor = "button-balanced";
+			break;	
+		case "energized":
+			$scope.data.buttonColor = "button-energized";
+			break;	
+		case "assertive":
+			$scope.data.buttonColor = "button-assertive"; 
+			break;	
+		case "royal":
+			$scope.data.buttonColor = "button-royal";
+			break;	
+		default:
+			$scope.data.buttonColor = "button-dark";
 
 	}
+	console.log("color switch - "+$scope.data.buttonColor);
+	}
+
+	$scope.newTimer = function(){
+		console.log($scope.data.name+'  '+$scope.data.color)
+		Database.newTimer($scope.data.name,$scope.data.color);
+	}
+	
+
+	
 
 
 
@@ -113,7 +126,7 @@ angular.module('chronos.controllers', [])
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval, Foods, CurrentUser, Timers, Clock) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval, Foods, CurrentUser, Timers, Clock,Database) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -150,25 +163,17 @@ angular.module('chronos.controllers', [])
 		}
 		//making sure only one timer is active
 		for (var i = 0; i < $scope.timers.length; ++i){
-			//			$scope.timers[index].counter = 0;
-			//			$scope.timers[index].runClock = null;
-			//			$scope.timers[index].state = 0;
 			if($scope.timers[i].state == 1){
 				if($scope.timers[index] != $scope.timers[i]){
 					console.log("another timer is running");
 					$scope.stop(i);
 				}
-
 			}
-
 		}
-
-
 
 		function displayTime() {
 			$scope.timers[index].time = moment().hour(0).minute(0).second($scope.timers[index].counter++).format('HH : mm : ss');
 		}
-
 
 		$scope.start = function() {
 			if($scope.timers[index].runClock==null)
@@ -184,11 +189,16 @@ angular.module('chronos.controllers', [])
 			$interval.cancel($scope.timers[index].runClock);
 			$scope.timers[index].runClock=null;
 			$scope.timers[index].state = 0;
+			//call to add time function
+			Database.addTime($scope.timers[index].time, $scope.timers[index].$id);
+			$scope.reset();
+
 		}
 
 		$scope.reset = function() {
 			$scope.timers[index].counter = 0;
-			displayTime();
+			$scope.timers[index].time = null;
+			
 		}
 
 

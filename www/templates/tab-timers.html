@@ -22,8 +22,8 @@
 
 
 			<!--sort by groups-->
-			<label class="item item-input item-select">
-				<div class="input-label">
+			<label class="item item-input item-select ">
+				<div class="input-label ">
 					Timer collection
 				</div>
 				<select>
@@ -36,13 +36,12 @@
 
 		</div>
 
+<!--		TODO: make the button ui. a div lokking like a button-->
 		<div class=" has-header padding">
-			<buttom ng-click="test2()" class="button button-block button-calm">First</buttom>
-			<buttom ng-click="test2()" class="button button-block button-energized">{{time}}</buttom>
-			<buttom ng-click="writeUserId()" class="button button-block button-balanced">Third</buttom>
-			<!--	repeat button		-->
-			<buttom ng-repeat="timer in timers" class="button button-block button-royal" ng-click="clock($index)">{{timer.$id}} {{timer.time}}</buttom>
-
+			<buttom ng-click="test2()" class="button button-block button-calm">First</buttom>	
+		</div>
+		<div class="list padding">
+			<buttom ng-click="clock($index)"  ng-repeat="timer in timers" class="button button-block button-calm" ng-class="'button-'+timer.color" ><p class="timer timer-left">00 : 00 : 00</p><p class="timer timer-center">{{timer.name}}</p><p class="timer timer-right ">{{timer.time}}</p></buttom>
 		</div>
 
 

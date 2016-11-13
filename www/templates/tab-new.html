@@ -10,10 +10,29 @@
 				<input ng-model="data.name" type="text" placeholder="Name">
 			</label>
 
+			  <!--selct color-->
+			  <label   class="item item-input item-select ">
+				<div class="input-label">
+					<!--<a  class="button button-outline icon-right ion-android-color-palette button-dark " ng-class="{'button-calm' : data.color == 'calm' }">color</a>-->
+				</div>
+				<select ng-change="colorSwitch()" ng-model="data.color" class=" select-outline">
+					<option  value="positive">positive</option>
+					<option  value="calm" selected>calm</option>
+					<option  value="balanced">balanced</option>
+					<option  value="energized">energized</option>
+					<option  value="assertive">assertive</option>
+					<option  value="royal">royal</option>
+				</select>
+				<div>
+					<!--have to display the button after in order for ng-class to work-->
+				<button  class="button button-color button-outline icon-right ion-android-color-palette button-calm " ng-class="data.buttonColor">Color</button>
+				</div>
+			</label>
+
 
 		</div>
 		<div>
-			<button ng-click="addNewTimer()" class="button-block padding add-button">Add</button>
+			<button ng-click="newTimer()" class="button-block padding add-button">Add</button>
 		</div>
 
 	</ion-content>
