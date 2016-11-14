@@ -61,7 +61,7 @@ angular.module('chronos.services', [])
 		//ADD TIME ON TIMER STOP
 		addTime: function(time, timerKey){
 
-			var date = new Date();
+			var date = Date.now();
 			//time data
 			var timersData = {};
 			timersData[date] = time;
@@ -70,7 +70,6 @@ angular.module('chronos.services', [])
 			updates['/timers/' + timerKey] = timersData;
 
 			firebase.database().ref('timers/'+timerKey+'/').update(timersData);
-			console.log(timerKey +' : '+time);
 
 		// 	firebase.database().ref("users").child(CurrentUser.uid).update({
 		// 	email: CurrentUser.email
@@ -118,15 +117,23 @@ angular.module('chronos.services', [])
 })
 
 	.factory('Timers', function($firebaseArray, CurrentUser){
-	// Might use a resource here that returns a JSON array
-
-	// Some fake testing data
-	var timers = $firebaseArray(firebase.database().ref("users/"+CurrentUser.uid+'/timers'));
+	
+	
 
 	return {
 		all: function() {
+			var timers = $firebaseArray(firebase.database().ref("users/"+CurrentUser.uid+'/timers'));
 			return timers;
+		},
+		elapsedTime: function(timerkey) {
+
+			var startDate = '1479054589592';
+
+			var elapsedTime = $firebaseArray(firebase.database().ref('/timers/'+timerkey+'/').orderByKey().startAt(startDate));
+			return elapsedTime;
+
 		}
+
 
 	};
 

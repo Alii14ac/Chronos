@@ -138,17 +138,39 @@ angular.module('chronos.controllers', [])
 
 	$scope.timers = Timers.all();
 
+	//on load - set elapsed time
+	$scope.timers.$loaded()
+			.then(function(){
+				// access data here;
+				for (var i = 0 ; i < $scope.timers.length ; ++i){
+				 $scope.displayElapsed(i);	
+				}
+			});
 
-	$scope.test2 = function(index){
-		for (var i = 0; i < $scope.timers.length; ++i){
-			$scope.timers[i].counter = 0;
-			$scope.timers[i].runClock = null;
-			$scope.timers[i].state = 0;
-			console.log("loop "+i);
-		}
-		console.log("ready to time repeated buttons");
-
+		
+	$scope.test2 = function(){
+					
 	}
+	//ELAPSED TIME FUNCTION
+	$scope.displayElapsed =function(index){
+
+			$scope.timers[index].elapsedTime = 0;
+			$scope.timers[index].elapsedTimeArray = Timers.elapsedTime($scope.timers[index].$id);
+
+			$scope.timers[index].elapsedTimeArray.$loaded()
+			.then(function(){
+				// access data here;
+
+				for (var i = 0; i < $scope.timers[index].elapsedTimeArray.length  ; ++i){
+				
+				 	$scope.timers[index].elapsedTime += $scope.timers[index].elapsedTimeArray[i].$value
+				}
+
+				$scope.timers[index].elapsedTime =  moment().hour(0).minute(0).second($scope.timers[index].elapsedTime-1).format('HH : mm : ss')
+			});
+
+		}
+	
 
 	//TIME FUNCTIONS
 	$scope.clock = function(index){
@@ -171,6 +193,8 @@ angular.module('chronos.controllers', [])
 			}
 		}
 
+
+
 		function displayTime() {
 			$scope.timers[index].time = moment().hour(0).minute(0).second($scope.timers[index].counter++).format('HH : mm : ss');
 		}
@@ -187,10 +211,12 @@ angular.module('chronos.controllers', [])
 
 		$scope.stop = function(index) {
 			$interval.cancel($scope.timers[index].runClock);
+			$scope.displayElapsed(index);
 			$scope.timers[index].runClock=null;
 			$scope.timers[index].state = 0;
 			//call to add time function
-			Database.addTime($scope.timers[index].time, $scope.timers[index].$id);
+			Database.addTime($scope.timers[index].counter-1 , $scope.timers[index].$id);
+				
 			$scope.reset();
 
 		}
@@ -205,11 +231,9 @@ angular.module('chronos.controllers', [])
 
 
 		if($scope.timers[index].state == 0){
-			console.log("timer started")
 			$scope.start();
 
 		}else if($scope.timers[index].state == 1){
-			console.log("timer stoped")
 			$scope.stop(index);
 
 		}
