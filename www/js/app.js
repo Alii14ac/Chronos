@@ -8,8 +8,10 @@
 angular.module('chronos', [
 	'ionic',
 	'firebase',
+  'ngAnimate',
 	'chart.js',
-	'jett.ionic.filter.bar', 'chronos.controllers',
+	'jett.ionic.filter.bar',
+  'chronos.controllers',
 	'chronos.services'
 ])
 

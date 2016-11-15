@@ -36,14 +36,14 @@
 
 		</div>
 
-<!--		TODO: make the button ui. a div lokking like a button-->
-		<div class=" has-header padding">
-			<buttom ng-click="test2()" class="button button-block button-calm">test2()</buttom>	
-		</div>
+		
 		<div class="list padding">
-			<buttom ng-click=" moveItem(timer,$index,0) "  ng-repeat="timer in timers" class="button button-block button-calm" ng-class="'button-'+timer.color" ><p class="timer timer-left">{{timer.elapsedTime}}</p><p class="timer timer-center">{{timer.name}}</p><p class="timer timer-right ">{{timer.time}}</p></buttom>
+			<buttom ng-click=" moveItem(timer,$index,0) "  ng-repeat="timer in timers" ng-animate="'timer'" class="button button-block button-calm" ng-class="'button-'+timer.color" ><p class="timer timer-left">{{timer.elapsedTime}}</p><p class="timer timer-center">{{timer.name}}</p><p class="timer timer-right ">{{timer.time}}</p></buttom>
 		</div>
 
+		<div class=" has-header padding timerAnimate">
+			<buttom ng-click="test2()"  class="button button-block button-dark">test button</buttom>	
+		</div>
 
 
 
