@@ -149,8 +149,11 @@ angular.module('chronos.controllers', [])
 
 		
 	$scope.test2 = function(){
-					
+		$scope.moveItem($scope.timers[1],1,0);			
 	}
+
+
+
 	//ELAPSED TIME FUNCTION
 	$scope.displayElapsed =function(index){
 
@@ -170,25 +173,39 @@ angular.module('chronos.controllers', [])
 			});
 
 		}
-	
+
+	// -------- NG-CLICK --------------------	
+	$scope.moveItem = function(item, fromIndex, toIndex) {
+    //Move the item in the array
+    $scope.timers.splice(fromIndex, 1);
+    $scope.timers.splice(toIndex, 0, item);
+
+	//start clock(). index will always be zero due to array reorder. 
+	// A bit hacked together = write cleaner code
+	$scope.clock(0);
+
+  	};
 
 	//TIME FUNCTIONS
-	$scope.clock = function(index){
+		$scope.clock = function(index){
 
 		//workaround for making the loop run
 		if ($scope.timers[index].counter == null){
-			//for (var i = 0; i < $scope.timers.length; ++i){
+			
 			$scope.timers[index].counter = 0;
 			$scope.timers[index].runClock = null;
 			$scope.timers[index].state = 0;
-			//}
+			
 		}
+
+
 		//making sure only one timer is active
 		for (var i = 0; i < $scope.timers.length; ++i){
 			if($scope.timers[i].state == 1){
 				if($scope.timers[index] != $scope.timers[i]){
 					console.log("another timer is running");
 					$scope.stop(i);
+					$scope.timers[i].time = null;
 				}
 			}
 		}
@@ -243,7 +260,6 @@ angular.module('chronos.controllers', [])
 
 
 	}
-
 
 
 
