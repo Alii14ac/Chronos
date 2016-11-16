@@ -18,10 +18,10 @@ angular.module('chronos.services', [])
 		return {
 		//NEW TIMER	
 		newTimer: function(name, color) {
-			console.log("addNewTimer function reached ")
+			
 
 		if(name != null){
-			var date = new Date();
+			var date = Date.now();
 
 			// users timer entry.
 			var timerData = {
@@ -43,10 +43,10 @@ angular.module('chronos.services', [])
 
 			firebase.database().ref().update(updates);
 
-			varalertPopup=$ionicPopup.alert({
-				title: timerData.name+" timer added",
-				template: ''
-			});
+			// varalertPopup=$ionicPopup.alert({
+			// 	title: timerData.name+" timer added",
+			// 	template: ''
+			// });
 			$state.go('tab.timers');
 
 		}else{

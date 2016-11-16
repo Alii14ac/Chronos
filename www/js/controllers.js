@@ -108,7 +108,7 @@ angular.module('chronos.controllers', [])
 			$scope.data.buttonColor = "button-dark";
 
 	}
-	console.log("color switch - "+$scope.data.buttonColor);
+
 	}
 
 	$scope.newTimer = function(){
@@ -168,8 +168,11 @@ angular.module('chronos.controllers', [])
 				
 				 	$scope.timers[index].elapsedTime += $scope.timers[index].elapsedTimeArray[i].$value
 				}
-
+				if ($scope.timers[index].elapsedTime != 0){
 				$scope.timers[index].elapsedTime =  moment().hour(0).minute(0).second($scope.timers[index].elapsedTime-1).format('HH : mm : ss')
+				}else{
+					$scope.timers[index].elapsedTime = "Not Used Yet"
+				}
 			});
 
 		}

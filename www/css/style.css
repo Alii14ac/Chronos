@@ -70,6 +70,16 @@ ion-content{
 	
 }
 
+
+.pie{
+	
+	
+	position: absolute;
+	
+	left: 17%;
+	padding-top: 5%;
+}
+
 .ng-enter {
   -webkit-transition: 1s;
   transition: 1s;
