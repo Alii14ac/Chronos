@@ -15,6 +15,55 @@ angular.module('chronos.services', [])
 
 	.factory('Database',function(CurrentUser, $ionicPopup, $state){
 
+		firebase.database().ref('diaries').on('value', function(snapshot) {
+			var tmp=snapshot.val();
+			var diariesArray=[];
+			for(var i in tmp){
+			diariesArray.push(tmp[i]);
+			}
+			$scope.plotData = Foods.getPlotData(diariesArray);
+		});
+
+
+		function createPlotData(diaries){
+			var startDate= new Date(diaries[0].date.split('T')[0]);
+			var endtDate= new Date(diaries[diaries.length-1].date.split('T')[0]);
+			var counter =0;
+			var plotData={
+			labels: [],
+			series: ['Intake'],
+			data: []
+			};
+			while(startDate.getTime()<=endtDate.getTime()){
+			var currentDate= new Date(diaries[counter].date);
+			var tmp=0;
+			var timeDiff=Math.abs(currentDate.getTime() - startDate.getTime());
+			var diffDays=timeDiff/ (1000*3600*24);
+			plotData.labels.push(startDate.toDateString());
+			if(currentDate.getTime() > startDate.getTime() && diffDays>=1){
+				plotData.data.push(0);
+				startDate.setDate(startDate.getDate()+1);
+				continue;
+			}
+			while(diffDays<1){
+				tmp+=parseFloat(diaries[counter].amount) *parseInt(diaries[counter].food.calories);
+				counter +=1;
+				if(counter >= diaries.length){
+				break;
+				}
+				currentDate = new Date(diaries[counter].date);
+				timeDiff=Math.abs(currentDate.getTime() -startDate.getTime());
+				diffDays=timeDiff/ (1000*3600*24);
+			} 
+			plotData.data.push(tmp);
+			startDate.setDate(startDate.getDate()+1);
+			}
+			return plotData;
+		}
+
+
+
+
 		return {
 		//NEW TIMER	
 		newTimer: function(name, color) {
@@ -58,23 +107,11 @@ angular.module('chronos.services', [])
 		};
 
 		},
-		//ADD TIME ON TIMER STOP
-		addTime: function(time, timerKey){
-
-			var date = Date.now();
-			//time data
-			var timersData = {};
-			timersData[date] = time;
-
-			var updates = {};
-			updates['/timers/' + timerKey] = timersData;
-
-			firebase.database().ref('timers/'+timerKey+'/').update(timersData);
-
-		// 	firebase.database().ref("users").child(CurrentUser.uid).update({
-		// 	email: CurrentUser.email
-		// });
-
+		
+		//GET PLOT DATA
+		getPlotData: function(diariesArray) {
+			diariesArray.sort(compare);
+			return createPlotData(diariesArray);
 		}
 
 	}
@@ -118,7 +155,7 @@ angular.module('chronos.services', [])
 
 	.factory('Timers', function($firebaseArray, CurrentUser){
 	
-	
+	var timers = [];
 
 	return {
 		all: function() {
@@ -131,6 +168,32 @@ angular.module('chronos.services', [])
 
 			var elapsedTime = $firebaseArray(firebase.database().ref('/timers/'+timerkey+'/').orderByKey().startAt(startDate));
 			return elapsedTime;
+
+		},
+		//ADD TIME ON TIMER STOP
+		addTime: function(time, timerKey){
+
+			var date = Date.now();
+			//time data
+			var timersData = {};
+			timersData[date] = time;
+
+			var updates = {};
+			updates['/timers/' + timerKey] = timersData;
+
+			firebase.database().ref('timers/'+timerKey+'/').update(timersData);
+
+		
+
+		},
+		setTimers: function(TimersArray){
+
+			timers = TimersArray;
+			
+		},
+		getTimers: function(){
+
+			return TimersArray;
 
 		}
 

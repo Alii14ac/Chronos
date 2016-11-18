@@ -87,22 +87,14 @@ angular.module('chronos', [
         }
       }
     })
-    .state('tab.food-detail', {
-      url: '/foods/:foodId',
-      views: {
-        'tab-timers': {
-          templateUrl: 'templates/food-detail.html',
-          controller: 'FoodDetailCtrl'
-        }
-      }
-    })
+   
 
   .state('tab.stat', {
     url: '/stat',
     views: {
       'tab-stat': {
         templateUrl: 'templates/tab-stat.html',
-        controller: 'AccountCtrl'
+        controller: 'StatsCtrl'
       }
     }
   });

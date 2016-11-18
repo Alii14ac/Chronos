@@ -9,7 +9,7 @@ angular.module('chronos.controllers', [])
 		Auth.signInWithEmailAndPassword($scope.data.email, $scope.data.password)
 			.then(function(authData){
 			console.log(authData);
-			$state.go('tab.timers');
+			$state.go('tab.stat');
 		}).catch(function(error) {
 			console.log(error);
 			varalertPopup=$ionicPopup.alert({
@@ -235,7 +235,7 @@ angular.module('chronos.controllers', [])
 			$scope.timers[index].runClock=null;
 			$scope.timers[index].state = 0;
 			//call to add time function
-			Database.addTime($scope.timers[index].counter-1 , $scope.timers[index].$id);
+			Timers.addTime($scope.timers[index].counter-1 , $scope.timers[index].$id);
 				
 			$scope.reset();
 
@@ -270,103 +270,70 @@ angular.module('chronos.controllers', [])
 })
 //TIMERS CONTROLLER END
 
-	.controller('FireCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, Foods, CurrentUser) {
-	// With the new view caching in Ionic, Controllers are only called
-	// when they are recreated or on app start, instead of every page change.
-	// To listen for when this page is active (for example, to refresh data),
-	// listen for the $ionicView.enter event:
-	//
-	//$scope.$on('$ionicView.enter', function(e) {
-	//});
-
-	$scope.testWrite = function(){
-		console.log("testWrite function reached");
-		$scope.testWrite.data = {};
-		$scope.testWrite.data.name = "NameTest1"
-		$scope.testWrite.data.email = "Email@test.dk1"
-		$scope.testWrite.writeUserData = function() {
-			console.log("data set");
-			firebase.database().ref('/users/email').set({
-				username1: $scope.data.testWrite.name,
-				email1: $scope.data.testWrite.email
-			});
-		};
-	};
-
-
-	$scope.testRead = function(){
-		console.log('test read function reached');
-		var starCountRef = firebase.database().ref('users/');
-		console.log(starCountRef);
-		starCountRef.on('value', function(snapshot) {
-			updateStarCount(postElement, snapshot.val());
-		});
-	};
-
-	$scope.test = function(){
-		console.log("test function reached!")
-	};
-
-	$scope.currentUser = function(){
-		console.log("current user function reached");
-		var current = CurrentUser.uid;
-		console.log(current);
-
-	};
-
-	$scope.writeUserId = function() {
-		var currentUser = CurrentUser.uid;
-		console.log("writeUserId function reached");
-		firebase.database().ref("users").child(CurrentUser.uid).update({
-			email: CurrentUser.email
-		});
-	}
-
-	//SNAPSHOT FROM DATABASE
-	// $scope.refreshDiaries=function() {
-	//   $timeout(function() {
-	//   $scope.plotData=Foods.getPlotData();
-	//   $scope.$broadcast('scroll.refreshComplete');
-	//   }, 1000);
-	// }
-
-	firebase.database().ref('diaries').on('value', function(snapshot) {
-		var tmp=snapshot.val();
-		var diariesArray=[];
-		for(var i in tmp){
-			diariesArray.push(tmp[i]);
-		}
-		$scope.plotData = Foods.getPlotData(diariesArray);
-	});
-	// $
-
-})
-
-
 
 	.controller('AddCtrl', function($scope, $state, Foods){
-	$scope.foods=Foods.all();
-	$scope.newFood={
-		id:$scope.foods.length,
-		name:'',
-		cat:'',
-		img:'',
-		calories: 0
-	}
-	$scope.confirm=function () {
-		Foods.add($scope.newFood);
-		$scope.close();
-	};
-	$scope.close=function() {
-		$state.go('tab.foods');
-	};
+	
 })
-	.controller('FoodDetailCtrl', function($scope, $stateParams, Foods) {
-	$scope.food = Foods.get($stateParams.foodId);
-})
+	
 
-	.controller('AccountCtrl', function($scope) {
-	$scope.settings = {
-		enableFriends: true
-	};
+	.controller('StatsCtrl', function($scope, Timers) {
+	
+	$scope.all = Timers.all();
+
+	
+	$scope.timersArray=[];
+	$scope.array=[];
+	$scope.index = 0;
+
+	$scope.all.$loaded()
+	.then(function(){
+		// access data here;
+		
+		
+			for(i = 0; i < $scope.all.length ; ++i){  
+			
+			// $scope.array[i].name = $scope.all[i].name;
+			
+			$scope.all[i].counter = 0;
+			$scope.index = i;
+
+			$scope.all[i].elapsedTime = Timers.elapsedTime($scope.all[i].$id); 
+			console.log($scope.all[i].elapsedTime);
+			
+			$scope.all[i].elapsedTime.$loaded()
+			.then(function(){
+
+				
+
+				
+
+				for(j = 0; j < $scope.all[$scope.index].elapsedTime.length ; ++j){
+					// console.log($scope.elapsedTime[i].$value);
+					$scope.all[$scope.index].counter += $scope.all[$scope.index].elapsedTime[j].$value;
+				}
+
+				// console.log($scope.counter);
+				$scope.all[$scope.index].counter; // = moment().hour(0).minute(0).second($scope.counter-1).format('HH : mm : ss')
+				$scope.all[$scope.index].data = {'name':$scope.all[$scope.index].name, 'counter': $scope.all[$scope.index].counter};
+				$scope.timersArray.push($scope.all[$scope.index].data);	
+				});
+				
+				
+
+				
+			}
+
+	});//$loaded end
+
+
+
+	$scope.test = function(){
+		console.log($scope.timersArray);
+	}
+
+
+
+
 });
+
+

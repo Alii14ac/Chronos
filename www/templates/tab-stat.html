@@ -1,10 +1,54 @@
 <ion-view view-title="Statistics">
-  <ion-content>
+ 
     
-    <div class="pie">
-      <img src="img/Pie-chart.png">
+   <ion-content class="padding">
+
+    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="">
+    </ion-refresher>
+
+    <div class="list">
+			<!--sort by time-->
+			<label class="item item-input item-select">
+				<div class="input-label">
+					Most used the last
+				</div>
+				<select>
+					<option>Day</option>
+					<option selected>Week</option>
+					<option>Month</option>
+				</select>
+			</label>
+
+
+			<!--sort by groups-->
+			<label class="item item-input item-select ">
+				<div class="input-label ">
+					Timer collection
+				</div>
+				<select>
+					<option selected>All</option>
+					<option >Work</option>
+					<option>Project</option>
+					<option>Personal</option>
+				</select>
+			</label>
+
+		</div>
+
+
+    <div class="card">
+      <div class="item item-divider">
+      A bar chart
+      </div>
+      <div class="item item-text-wrap">
+      <canvas id="bar" class="chart chart-bar" chart-data="plotData.data" chart-labels="plotData.labels" chart-series="plotData.series" options="{showTooltips: false}"></canvas>
+      </div>
     </div>
-    <p class="text-light text-center">All the statistics go here</p>
+
+    <div class=" has-header padding timerAnimate">
+			<buttom ng-click="test()"  class="button button-block button-dark">test button</buttom>	
+		</div>
+  
 
   </ion-content>
 </ion-view>
