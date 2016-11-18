@@ -12,6 +12,44 @@ angular.module('chronos.services', [])
 	return firebase.auth();
 })
 
+	.factory('Tools', function(){
+	
+	return {
+
+		colorCode: function(color){
+		var value;
+
+		switch(color){
+		case "positive":
+			value = "#387ef5";
+			break;
+		case "calm":
+			value = "#11c1f3";
+			break;
+		case "balanced":
+			value = "#33cd5f";
+			break;	
+		case "energized":
+			value = "#ffc900";
+			break;	
+		case "assertive":
+			value = "#ef473a"; 
+			break;	
+		case "royal":
+			value = "#886aea";
+			break;	
+		default:
+			$value = "";
+
+	}
+		return value;
+
+		}
+
+	}
+		
+})
+
 
 	.factory('Database',function(CurrentUser, $ionicPopup, $state){
 

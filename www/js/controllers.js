@@ -132,8 +132,9 @@ angular.module('chronos.controllers', [])
 	// To listen for when this page is active (for example, to refresh data),
 	// listen for the $ionicView.enter event:
 	//
-	//	$scope.$on('$ionicView.loaded', function(e) {
-	//	});
+		$scope.$on('$ionicView.loaded', function(e) {
+			
+		});
 
 
 	$scope.timers = Timers.all();
@@ -170,7 +171,8 @@ angular.module('chronos.controllers', [])
 				 	$scope.timers[index].elapsedTime += $scope.timers[index].elapsedTimeArray[i].$value
 				}
 				if ($scope.timers[index].elapsedTime != 0){
-				$scope.timers[index].counter = $scope.timers[index].elapsedTime;  	
+					//used for chart data
+				$scope.timers[index].yAxis = $scope.timers[index].elapsedTime;  	
 				$scope.timers[index].elapsedTime =  moment().hour(0).minute(0).second($scope.timers[index].elapsedTime-1).format('HH : mm : ss')
 				}else{
 					$scope.timers[index].elapsedTime = "Not Used Yet"
@@ -226,7 +228,7 @@ angular.module('chronos.controllers', [])
 		$scope.start = function() {
 			if($scope.timers[index].runClock==null)
 			{
-
+				console.log("timer started");
 				$scope.timers[index].runClock = $interval(displayTime, 1000);
 				$scope.timers[index].state = 1;
 
@@ -280,16 +282,21 @@ angular.module('chronos.controllers', [])
 })
 	
 
-	.controller('StatsCtrl', function($scope, Timers) {
+	.controller('StatsCtrl', function($scope, $state, Timers, Tools) {
 	
-	$scope.timers = Timers.getTimers();
+	$scope.$on('$ionicView.enter', function(e) {
+
+		$scope.timers = Timers.getTimers();
+		
 	
+
 	$scope.timers.$loaded()
 			.then(function(){
 				// access data here;
 				
 				$scope.labels = [];
 				$scope.data = [];
+				$scope.color = [];
 				 $scope.barOptions = {
 					scales: {
 						yAxes: [
@@ -297,6 +304,19 @@ angular.module('chronos.controllers', [])
 								display: false,
 							}
 						]
+					},
+					tooltips : {
+						callbacks : {
+							label: function(tooltipItems, data) {
+								// return  $scope.timers[tooltipItems.index].elapsedTime + '\<br/>'+' Times used: ' + $scope.timers[tooltipItems.index].elapsedTimeArray.length ;
+								var array = [$scope.timers[tooltipItems.index].elapsedTime, 'Times used: ' + $scope.timers[tooltipItems.index].elapsedTimeArray.length];
+								return array;
+								},
+							// afterTitle: function(tooltipItems, data) {
+							// 	return  $scope.timers[tooltipItems.index].elapsedTime ;
+							// 	},
+
+						}
 					}
 				};				
     
@@ -304,16 +324,24 @@ angular.module('chronos.controllers', [])
 				for (i = 0 ; i < $scope.timers.length ; ++i){
 
 					var label = $scope.timers[i].name;
-					var data = $scope.timers[i].counter;
+					var data = $scope.timers[i].yAxis;
+					var color = Tools.colorCode($scope.timers[i].color);
 
 					$scope.labels.push(label);
 					$scope.data.push(data);
+					$scope.color.push(color);
 
 				}
 
-				console.log($scope.timers.length);
+				
 
 			});
+
+		
+
+
+		});
+
 
 
 
@@ -326,6 +354,8 @@ angular.module('chronos.controllers', [])
 		console.log($scope.data);
 		console.log($scope.options);
 	}
+
+	
 
 });
 

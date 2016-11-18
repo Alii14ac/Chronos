@@ -3,8 +3,7 @@
     
    <ion-content class="padding">
 
-    <ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="">
-    </ion-refresher>
+   
 
     <div class="list">
 			<!--sort by time-->
@@ -35,20 +34,21 @@
 
 		</div>
 
+     <!--<ion-refresher pulling-icon="ion-arrow-down-b" on-refresh="">
+    </ion-refresher>-->
+
 
     <div class="card">
       <div class="item item-divider">
-      A bar chart
+      <p class="text-center">Charts</p>
       </div>
       <div class="item item-text-wrap">
-      <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-options="barOptions"></canvas>
-      <canvas id="pie" class="chart chart-pie" chart-data="data" chart-labels="labels" chart-series="series" options="{segmentShowStroke : false}"></canvas>
+      <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-colors="color" chart-options="barOptions"></canvas>
+      <canvas id="doughnut" class="padding chart chart-doughnut" chart-data="data" chart-labels="labels" chart-colors="color" chart-options="barOptions"></canvas>
       </div>
     </div>
 
-    <div class=" has-header padding timerAnimate">
-			<buttom ng-click="test()"  class="button button-block button-dark">test button</buttom>	
-		</div>
+   
   
 
   </ion-content>
