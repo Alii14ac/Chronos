@@ -41,7 +41,8 @@
       A bar chart
       </div>
       <div class="item item-text-wrap">
-      <canvas id="bar" class="chart chart-bar" chart-data="plotData.data" chart-labels="plotData.labels" chart-series="plotData.series" options="{showTooltips: false}"></canvas>
+      <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-options="barOptions"></canvas>
+      <canvas id="pie" class="chart chart-pie" chart-data="data" chart-labels="labels" chart-series="series" options="{segmentShowStroke : false}"></canvas>
       </div>
     </div>
 
@@ -52,3 +53,5 @@
 
   </ion-content>
 </ion-view>
+
+<!--"{showTooltips: false, scaleShowLabels: false}"-->

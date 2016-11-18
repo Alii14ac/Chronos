@@ -9,7 +9,7 @@ angular.module('chronos.controllers', [])
 		Auth.signInWithEmailAndPassword($scope.data.email, $scope.data.password)
 			.then(function(authData){
 			console.log(authData);
-			$state.go('tab.stat');
+			$state.go('tab.timers');
 		}).catch(function(error) {
 			console.log(error);
 			varalertPopup=$ionicPopup.alert({
@@ -149,7 +149,8 @@ angular.module('chronos.controllers', [])
 
 		
 	$scope.test2 = function(){
-		$scope.moveItem($scope.timers[1],1,0);			
+		var test = Timers.getTimers();
+		console.log(test);			
 	}
 
 
@@ -169,10 +170,13 @@ angular.module('chronos.controllers', [])
 				 	$scope.timers[index].elapsedTime += $scope.timers[index].elapsedTimeArray[i].$value
 				}
 				if ($scope.timers[index].elapsedTime != 0){
+				$scope.timers[index].counter = $scope.timers[index].elapsedTime;  	
 				$scope.timers[index].elapsedTime =  moment().hour(0).minute(0).second($scope.timers[index].elapsedTime-1).format('HH : mm : ss')
 				}else{
 					$scope.timers[index].elapsedTime = "Not Used Yet"
 				}
+
+				Timers.setTimers($scope.timers);
 			});
 
 		}
@@ -278,61 +282,50 @@ angular.module('chronos.controllers', [])
 
 	.controller('StatsCtrl', function($scope, Timers) {
 	
-	$scope.all = Timers.all();
-
+	$scope.timers = Timers.getTimers();
 	
-	$scope.timersArray=[];
-	$scope.array=[];
-	$scope.index = 0;
-
-	$scope.all.$loaded()
-	.then(function(){
-		// access data here;
-		
-		
-			for(i = 0; i < $scope.all.length ; ++i){  
-			
-			// $scope.array[i].name = $scope.all[i].name;
-			
-			$scope.all[i].counter = 0;
-			$scope.index = i;
-
-			$scope.all[i].elapsedTime = Timers.elapsedTime($scope.all[i].$id); 
-			console.log($scope.all[i].elapsedTime);
-			
-			$scope.all[i].elapsedTime.$loaded()
+	$scope.timers.$loaded()
 			.then(function(){
-
+				// access data here;
 				
+				$scope.labels = [];
+				$scope.data = [];
+				 $scope.barOptions = {
+					scales: {
+						yAxes: [
+							{
+								display: false,
+							}
+						]
+					}
+				};				
+    
 
-				
+				for (i = 0 ; i < $scope.timers.length ; ++i){
 
-				for(j = 0; j < $scope.all[$scope.index].elapsedTime.length ; ++j){
-					// console.log($scope.elapsedTime[i].$value);
-					$scope.all[$scope.index].counter += $scope.all[$scope.index].elapsedTime[j].$value;
+					var label = $scope.timers[i].name;
+					var data = $scope.timers[i].counter;
+
+					$scope.labels.push(label);
+					$scope.data.push(data);
+
 				}
 
-				// console.log($scope.counter);
-				$scope.all[$scope.index].counter; // = moment().hour(0).minute(0).second($scope.counter-1).format('HH : mm : ss')
-				$scope.all[$scope.index].data = {'name':$scope.all[$scope.index].name, 'counter': $scope.all[$scope.index].counter};
-				$scope.timersArray.push($scope.all[$scope.index].data);	
-				});
-				
-				
+				console.log($scope.timers.length);
 
-				
-			}
-
-	});//$loaded end
+			});
 
 
 
-	$scope.test = function(){
-		console.log($scope.timersArray);
+	$scope.refresh = function(){
+		$scope.timers = Timers.getTimers();
 	}
 
-
-
+	$scope.test = function(){
+		console.log($scope.labels);
+		console.log($scope.data);
+		console.log($scope.options);
+	}
 
 });
 
