@@ -130,7 +130,7 @@ angular.module('chronos.controllers', [])
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock,Database) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock,Database, Notifications) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -156,7 +156,8 @@ angular.module('chronos.controllers', [])
 	}
 
 	$scope.test = function(){	
-		console.log('long hold triggered');			
+		console.log('long hold triggered');	
+		Notifications.instant("reached from timers page");		
 	}
 
 	$scope.add=function(view){
@@ -392,24 +393,91 @@ angular.module('chronos.controllers', [])
 
 .controller('SettingsCtrl', function($scope, $state, $window, $ionicPopup, $cordovaLocalNotification, $ionicPlatform, Auth){
 
-$ionicPlatform.ready(function () {
-          if (ionic.Platform.isWebView()) {
+ $ionicPlatform.ready(function () {
+         
+         $scope.add = function() {
+        var alarmTime = new Date();
+        alarmTime.setMinutes(alarmTime.getSeconds + 4);
+        $cordovaLocalNotification.add({
+            id: "1234",
+            date: alarmTime,
+            message: "This is a message",
+            title: "This is a title",
+            autoCancel: true,
+            sound: null
+        }).then(function () {
+            console.log("The notification has been set");
+        });
+    };
 
-			  $scope.scheduleInstantNotification = function () {
-				$cordovaLocalNotification.schedule({
-				id: 1,
-				text: 'Instant Notification',
-				title: 'Instant'
-				}).then(function () {
-				alert("Instant Notification set");
-				});
-			};
+		 $scope.schedule = function() {
+        var alarmTime = new Date();
+        alarmTime.setMinutes(alarmTime.getSeconds + 4);
+        $cordovaLocalNotification.schedule({
+            id: "1",
+            // at: alarmTime,
+            message: "This is scheduled ",
+            title: "This is a title",
+            autoCancel: true,
+            // sound: null
+        }).then(function () {
+            console.log("The notification has been set");
+        });
+    };
+
+	$scope.instant = function() {
+        var alarmTime = new Date();
+        alarmTime.setMinutes(alarmTime.getSeconds + 4);
+        $cordovaLocalNotification.schedule({
+            id: "1",
+            // at: alarmTime,
+            message: "This is scheduled ",
+            title: "This is a title",
+            autoCancel: true,
+            // sound: null
+        }).then(function () {
+            console.log("The notification has been set");
+        });
+    };
+ 
+      
+         
+    });
+
+	// $scope.scheduleInstantNotification = function () {
+	// 	$cordovaLocalNotification.schedule({
+	// 		id: 1,
+	// 		title: 'Warning',
+	// 		text: "You're so sexy!",
+	// 		data: {
+	// 			customProperty: 'custom value'
+	// 		}
+	// 		}).then(function (result) {
+	// 		console.log('Notification 1 triggered');
+	// 		 var confirmPopup  = $ionicPopup.confirm({
+	// 			title: 'succes',
+	// 			template: 'Notification succes'
+	// 		});
+	// 		}).then(function (error) {
+	// 		console.log('error');
+	// 		 var confirmPopup  = $ionicPopup.confirm({
+	// 			title: 'error',
+	// 			template: 'Notification error'
+	// 		});
+	// 		});
+	// };
+
+$scope.test = function (){
+	var confirmPopup  = $ionicPopup.confirm({
+				title: 'test',
+				template: 'This is just for display'
+			});
+}
 
 
 
+          
 
-          }
-})
 
 $scope.signOut = function(){
 	$window.location.reload();  

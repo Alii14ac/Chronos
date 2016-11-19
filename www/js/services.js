@@ -194,6 +194,29 @@ angular.module('chronos.services', [])
 
 	};
 
+})
+
+.factory('Notifications', function($cordovaLocalNotification){
+	
+	var alarmTime = new Date();
+
+	return {
+		instant: function(message){
+
+			
+        alarmTime.setMinutes(alarmTime.getSeconds + 4);
+        $cordovaLocalNotification.schedule({
+            id: "1",
+            message: "Chronos ",
+            title: "Notification",
+            autoCancel: true,
+        }).then(function () {
+            console.log("The notification has been set");
+        });
+
+		}
+	}
+
 });
 
 
