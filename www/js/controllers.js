@@ -76,7 +76,7 @@ angular.module('chronos.controllers', [])
 //SIGNUP END
 
 //NEW TIMER CONTROLLER
-	.controller('NewCtrl', function($scope, $timeout, CurrentUser, $ionicPopup, $state, Database) {
+	.controller('NewCtrl', function($scope,$window, $timeout, CurrentUser, $ionicPopup, $state, Database) {
 	$scope.data = {};
 
 	$scope.data.elapsedTime = 0;
@@ -111,16 +111,26 @@ angular.module('chronos.controllers', [])
 
 	}
 
+	$scope.add=function(view){
+	console.log("settings");	
+    $state.go(view);
+  }
+
 	$scope.newTimer = function(){
 		console.log($scope.data.name+'  '+$scope.data.color)
 		Database.newTimer($scope.data.name,$scope.data.color);
 	}
+
+	$scope.signOut = function(){
+	$window.location.reload();  
+		$state.go('login');  
+}
 	
 })
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval,  CurrentUser, Timers, Clock,Database) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock,Database) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -149,7 +159,9 @@ angular.module('chronos.controllers', [])
 		console.log('long hold triggered');			
 	}
 
-
+	$scope.add=function(view){
+    $state.go(view);
+ 	}
 
 	//ELAPSED TIME FUNCTION
 	$scope.displayElapsed =function(index){
@@ -299,6 +311,12 @@ angular.module('chronos.controllers', [])
     ]
     });
   }
+
+  $scope.signOut = function(){
+	  
+	$window.location.reload();  
+		$state.go('login');  
+}
 })
 //TIMERS CONTROLLER END
 
@@ -306,7 +324,11 @@ angular.module('chronos.controllers', [])
 
 	
 
-	.controller('StatsCtrl', function($scope, $state, Timers, Tools) {
+	.controller('StatsCtrl', function($scope, $state,$window, Timers, Tools) {
+		$scope.signOut = function(){
+	$window.location.reload();  
+		$state.go('login');  
+}
 	
 	$scope.$on('$ionicView.enter', function(e) {
 
@@ -352,6 +374,11 @@ angular.module('chronos.controllers', [])
 				}
 			});
 		});
+
+	$scope.add=function(view){
+    $state.go(view);
+  	}
+
 	$scope.refresh = function(){
 		$scope.timers = Timers.getTimers();
 	}
@@ -361,6 +388,31 @@ angular.module('chronos.controllers', [])
 		console.log($scope.data);
 		console.log($scope.options);
 	}
-});
+})
 
+.controller('SettingsCtrl', function($scope, $state, $window, $ionicPopup, Auth){
+
+// $scope.signOut = function (){
+// 	firebase.auth().signOut().then(function() {
+//   		// Sign-out successful.
+// 		// $state.go('login');  
+// 		$window.location.reload();  
+// 		$state.go('login');  
+		
+		
+// 		}, function(error) {
+// 		// An error happened.
+// 		varalertPopup=$ionicPopup.alert({
+// 				title: 'Logout failed!',
+// 				template: ''
+// 			});
+// 		});
+// }
+
+$scope.signOut = function(){
+	$window.location.reload();  
+		$state.go('login');  
+}
+
+})
 

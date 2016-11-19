@@ -79,6 +79,17 @@ angular.module('chronos', [
       }
     })
    
+   .state('tab.settings', {
+    url: '/settings',
+    views: {
+      'tab-settings': {
+        templateUrl: 'templates/tab-settings.html',
+        controller: 'SettingsCtrl'
+      },
+      
+    }
+  })
+  
    
 
   .state('tab.stat', {
