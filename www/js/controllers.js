@@ -12,7 +12,7 @@ angular.module('chronos.controllers', [])
 			$state.go('tab.timers');
 		}).catch(function(error) {
 			console.log(error);
-			varalertPopup=$ionicPopup.alert({
+			var alertPopup=$ionicPopup.alert({
 				title: 'Login failed!',
 				template: 'Please check your credentials!'
 			});
@@ -116,17 +116,11 @@ angular.module('chronos.controllers', [])
 		Database.newTimer($scope.data.name,$scope.data.color);
 	}
 	
-
-	
-
-
-
-
 })
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval, Foods, CurrentUser, Timers, Clock,Database) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $interval,  CurrentUser, Timers, Clock,Database) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
@@ -135,7 +129,6 @@ angular.module('chronos.controllers', [])
 		$scope.$on('$ionicView.loaded', function(e) {
 			
 		});
-
 
 	$scope.timers = Timers.all();
 
@@ -147,11 +140,13 @@ angular.module('chronos.controllers', [])
 				 $scope.displayElapsed(i);	
 				}
 			});
-
 		
-	$scope.test2 = function(){
-		var test = Timers.getTimers();
-		console.log(test);			
+	$scope.test2 = function(){	
+		console.log('short press triggered');			
+	}
+
+	$scope.test = function(){	
+		console.log('long hold triggered');			
 	}
 
 
@@ -170,7 +165,7 @@ angular.module('chronos.controllers', [])
 				
 				 	$scope.timers[index].elapsedTime += $scope.timers[index].elapsedTimeArray[i].$value
 				}
-				if ($scope.timers[index].elapsedTime != 0){
+				if ($scope.timers[index].elapsedTime != 0 && $scope.timers[index].elapsedTime != null){
 					//used for chart data
 				$scope.timers[index].yAxis = $scope.timers[index].elapsedTime;  	
 				$scope.timers[index].elapsedTime =  moment().hour(0).minute(0).second($scope.timers[index].elapsedTime-1).format('HH : mm : ss')
@@ -220,7 +215,6 @@ angular.module('chronos.controllers', [])
 		}
 
 
-
 		function displayTime() {
 			$scope.timers[index].time = moment().hour(0).minute(0).second($scope.timers[index].counter++).format('HH : mm : ss');
 		}
@@ -249,12 +243,8 @@ angular.module('chronos.controllers', [])
 
 		$scope.reset = function() {
 			$scope.timers[index].counter = 0;
-			$scope.timers[index].time = null;
-			
+			$scope.timers[index].time = null;			
 		}
-
-
-
 
 		if($scope.timers[index].state == 0){
 			$scope.start();
@@ -263,33 +253,65 @@ angular.module('chronos.controllers', [])
 			$scope.stop(index);
 
 		}
-
-
-
-
-
 	}
 
+	 $scope.showPopup=function(timer) {
+ 
+   
+    // An elaborate, custom popup
+    var myPopup=$ionicPopup.show({
+    //   templateUrl: 'templates/timers-popup.html',
+      title: 'Options',
+	  subTitle: 'for '+'<b>'+timer.name+'</b>'+' timer',
+      
+      scope: $scope,
+      buttons: [
+      
+      {text: 'Edit',
+      type: ' button button-block button-positive ',
+      onTap: function(e) {
+        var alertPopup=$ionicPopup.alert({
+				title: 'Feature not available',
+				template: 'Coming soon'
+			});
+      }
+      },
+	  {text: 'Delete', 
+	  type: ' button button-block button-assertive ',
+	  onTap: function(e) {
+        var confirmPopup  = $ionicPopup.confirm({
+				title: 'Warning',
+				template: 'This can not be undone'
+			});
 
-
-
+			confirmPopup.then(function(res) {
+				if(res) {
+				console.log('deleting timer');
+				Timers.deleteTimer(timer.$id);
+				} else {
+				console.log('You are not sure');
+				}
+			});
+		
+       }
+	  },
+	  {text: 'Exit', type: ' button button-block button-energized ', onTap: function(){ myPopup.close();} },
+    ]
+    });
+  }
 })
 //TIMERS CONTROLLER END
 
 
-	.controller('AddCtrl', function($scope, $state, Foods){
-	
-})
+
 	
 
 	.controller('StatsCtrl', function($scope, $state, Timers, Tools) {
 	
 	$scope.$on('$ionicView.enter', function(e) {
 
-		$scope.timers = Timers.getTimers();
+	$scope.timers = Timers.getTimers();
 		
-	
-
 	$scope.timers.$loaded()
 			.then(function(){
 				// access data here;
@@ -308,14 +330,10 @@ angular.module('chronos.controllers', [])
 					tooltips : {
 						callbacks : {
 							label: function(tooltipItems, data) {
-								// return  $scope.timers[tooltipItems.index].elapsedTime + '\<br/>'+' Times used: ' + $scope.timers[tooltipItems.index].elapsedTimeArray.length ;
+								
 								var array = [$scope.timers[tooltipItems.index].elapsedTime, 'Times used: ' + $scope.timers[tooltipItems.index].elapsedTimeArray.length];
 								return array;
 								},
-							// afterTitle: function(tooltipItems, data) {
-							// 	return  $scope.timers[tooltipItems.index].elapsedTime ;
-							// 	},
-
 						}
 					}
 				};				
@@ -332,19 +350,8 @@ angular.module('chronos.controllers', [])
 					$scope.color.push(color);
 
 				}
-
-				
-
 			});
-
-		
-
-
 		});
-
-
-
-
 	$scope.refresh = function(){
 		$scope.timers = Timers.getTimers();
 	}
@@ -354,9 +361,6 @@ angular.module('chronos.controllers', [])
 		console.log($scope.data);
 		console.log($scope.options);
 	}
-
-	
-
 });
 
 

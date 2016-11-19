@@ -78,15 +78,7 @@ angular.module('chronos', [
         }
       }
     })
-    .state('tab.add', {
-      url:'/add',
-      views:{
-        'tab-timers':{
-          templateUrl:'templates/tab-add.html',
-          controller:'AddCtrl'
-        }
-      }
-    })
+   
    
 
   .state('tab.stat', {
