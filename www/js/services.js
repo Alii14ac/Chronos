@@ -201,6 +201,3 @@ angular.module('chronos.services', [])
 	
 
 
-
-
-

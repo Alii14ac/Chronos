@@ -7,6 +7,8 @@
   </ion-nav-title>
   <ion-content>
     <ul class="list">
+      
+            
 
       <div class="item item-divider">TOGGLE</div>
 
@@ -14,6 +16,10 @@
       <ion-toggle ng-model="wifi" toggle-class="toggle-positive">Wi-Fi</ion-toggle>
       <ion-toggle ng-model="bluetooth" toggle-class="toggle-calm">Bluetooth</ion-toggle>
       <ion-toggle ng-model="personalHotspot" toggle-class="toggle-dark">Personal Hotspot</ion-toggle>
+
+      <buttom ng-click="scheduleInstantNotification()"  class="button button-block button-balanced">Instant notification</buttom>
+            <buttom ng-click=""  class="button button-block button-assertive">Delete</buttom>
+            <buttom ng-click=""  class="button button-block button-energized">Cancel</buttom>	
 
       <div class="item item-divider">CHECKBOXES</div>
 
@@ -29,7 +35,7 @@
 
       <div class="item item-divider">RANGES</div>
 
-      <div class="range">
+      <div class="range white">
         <i class="icon ion-volume-low"></i>
         <input type="range" name="volume">
         <i class="icon ion-volume-high"></i>

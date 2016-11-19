@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "moment": "^2.15.2",
-    "angular-chart.js": "^1.0.3"
+    "angular-chart.js": "^1.0.3",
+    "ngCordova": "^0.1.27-alpha"
   }
 }

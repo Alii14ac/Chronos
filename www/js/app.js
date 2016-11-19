@@ -9,6 +9,7 @@ angular.module('chronos', [
 	'ionic',
 	'firebase',
   'ngAnimate',
+  'ngCordova',
 	'chart.js',
 	'jett.ionic.filter.bar',
   'chronos.controllers',

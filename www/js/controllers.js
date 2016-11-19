@@ -390,24 +390,26 @@ angular.module('chronos.controllers', [])
 	}
 })
 
-.controller('SettingsCtrl', function($scope, $state, $window, $ionicPopup, Auth){
+.controller('SettingsCtrl', function($scope, $state, $window, $ionicPopup, $cordovaLocalNotification, $ionicPlatform, Auth){
 
-// $scope.signOut = function (){
-// 	firebase.auth().signOut().then(function() {
-//   		// Sign-out successful.
-// 		// $state.go('login');  
-// 		$window.location.reload();  
-// 		$state.go('login');  
-		
-		
-// 		}, function(error) {
-// 		// An error happened.
-// 		varalertPopup=$ionicPopup.alert({
-// 				title: 'Logout failed!',
-// 				template: ''
-// 			});
-// 		});
-// }
+$ionicPlatform.ready(function () {
+          if (ionic.Platform.isWebView()) {
+
+			  $scope.scheduleInstantNotification = function () {
+				$cordovaLocalNotification.schedule({
+				id: 1,
+				text: 'Instant Notification',
+				title: 'Instant'
+				}).then(function () {
+				alert("Instant Notification set");
+				});
+			};
+
+
+
+
+          }
+})
 
 $scope.signOut = function(){
 	$window.location.reload();  
