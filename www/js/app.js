@@ -70,6 +70,16 @@ angular.module('chronos', [
     }
   })
 
+   .state('tab.map', {
+    url: '/new/map',
+    views: {
+      'tab-new': {
+        templateUrl: 'templates/map.html',
+        controller: 'MapCtrl'
+      }
+    }
+  })
+
   .state('tab.timers', {
       url: '/timers',
       views: {

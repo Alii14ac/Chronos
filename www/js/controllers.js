@@ -76,7 +76,7 @@ angular.module('chronos.controllers', [])
 //SIGNUP END
 
 //NEW TIMER CONTROLLER
-	.controller('NewCtrl', function($scope,$window, $timeout, CurrentUser, $ionicPopup, $state, Database) {
+	.controller('NewCtrl', function($scope,$window, $timeout, $cordovaGeolocation, CurrentUser, $ionicPopup, $ionicPlatform, $ionicLoading, $state, Database) {
 	$scope.data = {};
 
 	$scope.data.elapsedTime = 0;
@@ -111,9 +111,9 @@ angular.module('chronos.controllers', [])
 
 	}
 
-	$scope.add=function(view){
-	console.log("settings");	
-    $state.go(view);
+	$scope.map = function(){
+	console.log("going to map");		
+    $state.go('tab.map');
   }
 
 	$scope.newTimer = function(){
@@ -125,6 +125,12 @@ angular.module('chronos.controllers', [])
 	$window.location.reload();  
 		$state.go('login');  
 }
+
+   
+
+	
+	
+
 	
 })
 //NEW CONTROLLER END
@@ -444,29 +450,6 @@ angular.module('chronos.controllers', [])
          
     });
 
-	// $scope.scheduleInstantNotification = function () {
-	// 	$cordovaLocalNotification.schedule({
-	// 		id: 1,
-	// 		title: 'Warning',
-	// 		text: "You're so sexy!",
-	// 		data: {
-	// 			customProperty: 'custom value'
-	// 		}
-	// 		}).then(function (result) {
-	// 		console.log('Notification 1 triggered');
-	// 		 var confirmPopup  = $ionicPopup.confirm({
-	// 			title: 'succes',
-	// 			template: 'Notification succes'
-	// 		});
-	// 		}).then(function (error) {
-	// 		console.log('error');
-	// 		 var confirmPopup  = $ionicPopup.confirm({
-	// 			title: 'error',
-	// 			template: 'Notification error'
-	// 		});
-	// 		});
-	// };
-
 $scope.test = function (){
 	var confirmPopup  = $ionicPopup.confirm({
 				title: 'test',
@@ -476,13 +459,99 @@ $scope.test = function (){
 
 
 
-          
-
-
 $scope.signOut = function(){
 	$window.location.reload();  
 		$state.go('login');  
 }
 
+})
+
+.controller('MapCtrl', function($scope, $cordovaGeolocation) {
+  var options = {timeout: 30000, maximumAge: 0, enableHighAccuracy: true};
+  var latLng;
+  var marker;
+  var pathCoords = [];
+  var path;
+  $scope.watch = null;
+  
+  $cordovaGeolocation.getCurrentPosition(options).then(function(position){
+ 
+    latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+    pathCoords.push(latLng);
+    console.log(position.coords.latitude + ', ' + position.coords.longitude)
+
+    var mapOptions = {
+      center: latLng,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+ 
+    $scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+	var currentMarker = '/img/curentPosition.png';
+    marker = new google.maps.Marker({
+      position: latLng, 
+      animation: google.maps.Animation.DROP,
+	  icon: currentMarker,
+      map: $scope.map});
+
+	userMarker =  new google.maps.Marker({
+		map: $scope.map,
+		animation: google.maps.Animation.DROP,
+		draggable: true
+	});
+
+	userCircle = new google.maps.Circle({
+		map: $scope.map,
+		//center: latLng, //userMarker.getPosition(),
+		radius: 40
+
+	});
+
+
+	choise = new google.maps.event.addListener($scope.map, "click", function (event) {
+    var latitude = event.latLng.lat();
+    var longitude = event.latLng.lng();
+
+	userMarker.setPosition(event.latLng);
+	userCircle.setCenter(event.latLng);
+
+    console.log( latitude + ', ' + longitude );
+}); //end addListener
+ 
+  }, function(error){
+    console.log("Could not get location");
+  });
+
+  $scope.startTracking = function(){
+    $scope.watch = $cordovaGeolocation.watchPosition(options);
+    $scope.watch.then(null, 
+    function(error){
+      console.log("Could not get location");
+    }, function(position){
+      latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      
+      pathCoords.push(latLng);
+      $scope.map.panTo(latLng);
+      marker.setPosition(latLng);
+
+      path = new google.maps.Polyline({
+        path: pathCoords,
+        geodesic: true,
+        strokeColor: '#0099cc',
+        strokeOpacity: 0.8,
+        strokeWeight: 2
+      });
+
+      path.setMap($scope.map);
+    });
+  }
+
+  $scope.stopTracking = function(){
+    $scope.watch.clearWatch();
+    $scope.watch = null;
+    path.setMap(null);
+    pathCoords = [];
+  }
 })
 
