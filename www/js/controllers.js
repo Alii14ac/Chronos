@@ -466,7 +466,7 @@ $scope.signOut = function(){
 
 })
 
-.controller('MapCtrl', function($scope, $cordovaGeolocation) {
+.controller('MapCtrl', function($scope, $cordovaGeolocation, $state) {
   var options = {timeout: 30000, maximumAge: 0, enableHighAccuracy: true};
   var latLng;
   var marker;
@@ -501,10 +501,19 @@ $scope.signOut = function(){
 		draggable: true
 	});
 
+	$scope.radius = 40;
+
+	$scope.setRadius = function(value){
+		console.log('radus changed '+ value);
+		$scope.radius = value;
+		userCircle.setRadius(Number(value));
+
+	}
+
 	userCircle = new google.maps.Circle({
 		map: $scope.map,
 		//center: latLng, //userMarker.getPosition(),
-		radius: 40
+		radius: $scope.radius 
 
 	});
 
@@ -514,44 +523,56 @@ $scope.signOut = function(){
     var longitude = event.latLng.lng();
 
 	userMarker.setPosition(event.latLng);
-	userCircle.setCenter(event.latLng);
+	// userCircle.setCenter(event.latLng);
 
     console.log( latitude + ', ' + longitude );
 }); //end addListener
+
+	
+
+	radiusChange = new google.maps.event.addListener(userMarker, "position_changed", function (event) {
+    userCircle.setCenter(userMarker.getPosition($scope.radius));
+}); 
  
   }, function(error){
     console.log("Could not get location");
   });
 
-  $scope.startTracking = function(){
-    $scope.watch = $cordovaGeolocation.watchPosition(options);
-    $scope.watch.then(null, 
-    function(error){
-      console.log("Could not get location");
-    }, function(position){
-      latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//   $scope.startTracking = function(){
+//     $scope.watch = $cordovaGeolocation.watchPosition(options);
+//     $scope.watch.then(null, 
+//     function(error){
+//       console.log("Could not get location");
+//     }, function(position){
+//       latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       
-      pathCoords.push(latLng);
-      $scope.map.panTo(latLng);
-      marker.setPosition(latLng);
+//       pathCoords.push(latLng);
+//       $scope.map.panTo(latLng);
+//       marker.setPosition(latLng);
 
-      path = new google.maps.Polyline({
-        path: pathCoords,
-        geodesic: true,
-        strokeColor: '#0099cc',
-        strokeOpacity: 0.8,
-        strokeWeight: 2
-      });
+//       path = new google.maps.Polyline({
+//         path: pathCoords,
+//         geodesic: true,
+//         strokeColor: '#0099cc',
+//         strokeOpacity: 0.8,
+//         strokeWeight: 2
+//       });
 
-      path.setMap($scope.map);
-    });
+//       path.setMap($scope.map);
+//     });
+//   }
+
+//   $scope.stopTracking = function(){
+//     $scope.watch.clearWatch();
+//     $scope.watch = null;
+//     path.setMap(null);
+//     pathCoords = [];
+//   }
+
+$scope.done = function(){
+	console.log("Map set");		
+    $state.go('tab.new');
   }
 
-  $scope.stopTracking = function(){
-    $scope.watch.clearWatch();
-    $scope.watch = null;
-    path.setMap(null);
-    pathCoords = [];
-  }
 })
 

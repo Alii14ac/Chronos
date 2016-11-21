@@ -19,6 +19,13 @@ ion-content{
 	text-align:center;
 }
 
+
+.map-button{
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .login-button{
 	margin: 1% 0%;
 	padding: 0% 40%;

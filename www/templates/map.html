@@ -1,10 +1,12 @@
 <ion-view title="Map">
     <ion-content>
-       
+       <!--<ion-spinner  icon="ripple" class="spinner-assertive"></ion-spinner>-->
         <div id="map" data-tapdisabled="true"></div>
-        <!--<div class="button-wrapper">
-            <button class="button round button-dark" ng-show="!watch" ngclick="startTracking()">Start Tracking</button>
-            <button class="button round button-energized" ng-show="watch" ngclick="stopTracking()">Stop Tracking</button>
-        </div>-->
+        <div class="button-wrapper">
+            <input type="range" value='{{radius}}' name="radius" min="0" max="100" ng-model="radius" ng-click="setRadius(radius)"  >
+            <button class="button round button-dark map-button" ng-click="done()">Set Grid</button>
+            <!--<button class="button round button-dark" ng-show="!watch" ngclick="startTracking()">Start Tracking</button>
+            <button class="button round button-energized" ng-show="watch" ngclick="stopTracking()">Stop Tracking</button>-->
+        </div>
     </ion-content>
 </ion-view>
