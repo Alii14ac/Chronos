@@ -51,55 +51,27 @@ angular.module('chronos.services', [])
 })
 
 
-	.factory('Database',function(CurrentUser, $ionicPopup, $state){
+	.factory('Geo',function(CurrentUser, $ionicPopup, $state, $firebaseArray){
 
-		
+		var newGrid = null;
 
 		return {
-		//NEW TIMER	
-		newTimer: function(name, color) {
-			
-
-		if(name != null){
-			var date = Date.now();
-
-			// users timer entry.
-			var timerData = {
-				color: color,
-				dateCreated: date,
-				name: name
-			};
-			//timers data
-			var timersData = {};
-			timersData[date] = 0;
-
-			// Get a key for a new Post.
-  			var newPostKey = firebase.database().ref("users/"+CurrentUser.uid).child('timers').push().key
-
-			  // Write the new post's data simultaneously in the posts list and the user's post list.
-			var updates = {};
-			updates["users/"+CurrentUser.uid+'/timers/' + newPostKey] = timerData;
-			updates['/timers/' + newPostKey] = timersData;
-
-			firebase.database().ref().update(updates);
-
-			// varalertPopup=$ionicPopup.alert({
-			// 	title: timerData.name+" timer added",
-			// 	template: ''
-			// });
-			$state.go('tab.timers');
-
-		}else{
-			console.log("no name set, couldnt set new timer")
-			varalertPopup=$ionicPopup.alert({
-				title: 'Error',
-				template: 'Please check you have a name set!'
-			});
-		};
-
-		},
 		
-	
+		getNewGrid: function() {
+			return newGrid;
+		},
+		setNewGrid: function(grid){
+			newGrid = grid;
+		},
+		setNewGridNull: function(){
+			newGrid = null;
+		},
+		getAllGrids: function(){
+
+			var allGrids = $firebaseArray(firebase.database().ref('/locations/'+CurrentUser.uid+'/'));
+			return allGrids;
+		}
+			
 	}
 
 
@@ -139,7 +111,7 @@ angular.module('chronos.services', [])
 
 })
 
-	.factory('Timers', function($firebaseArray, CurrentUser){
+	.factory('Timers', function($firebaseArray, $state, $ionicPopup, CurrentUser){
 	
 	var plotTimers;
 
@@ -189,7 +161,62 @@ angular.module('chronos.services', [])
 			firebase.database().ref('timers/'+id).remove();
 			firebase.database().ref("users/"+CurrentUser.uid+'/timers/'+id).remove();
 
-		}
+		},
+		//NEW TIMER	
+		newTimer: function(name, color, grid, gridName) {
+			
+
+		if(name != null){
+			var date = Date.now();
+
+			// Get a key for a new Post.
+  			var newPostKey = firebase.database().ref("users/"+CurrentUser.uid).child('timers').push().key
+			var newLocationKey = firebase.database().ref("locations/"+CurrentUser.uid).push().key  
+
+			// users timer entry.
+			var userData = {
+				color: color,
+				dateCreated: date,
+				name: name,
+				locations: {locationKey: newLocationKey}
+			};
+
+	
+			//timers data
+			var timersData = {};
+			timersData[date] = 0;
+
+			//Location data
+			var locationData = grid;
+			locationData['name'] = gridName;
+
+			
+			
+
+		
+			// Write the new post's data simultaneously in the posts list and the user's post list.
+			var updates = {};
+			updates["users/"+CurrentUser.uid+'/timers/' + newPostKey] = userData;
+			updates['/timers/' + newPostKey] = timersData;
+			updates['/locations/'+CurrentUser.uid+'/'+newLocationKey] = locationData;
+
+			firebase.database().ref().update(updates);
+
+			// varalertPopup=$ionicPopup.alert({
+			// 	title: timerData.name+" timer added",
+			// 	template: ''
+			// });
+			$state.go('tab.timers');
+
+		}else{
+			console.log("no name set, couldnt set new timer")
+			varalertPopup=$ionicPopup.alert({
+				title: 'Error',
+				template: 'Please check you have a name set!'
+			});
+		};
+
+		},
 
 
 	};

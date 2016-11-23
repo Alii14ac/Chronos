@@ -76,7 +76,19 @@ angular.module('chronos.controllers', [])
 //SIGNUP END
 
 //NEW TIMER CONTROLLER
-	.controller('NewCtrl', function($scope,$window, $timeout, $cordovaGeolocation, CurrentUser, $ionicPopup, $ionicPlatform, $ionicLoading, $state, Database) {
+	.controller('NewCtrl', function($scope,$window, $timeout, CurrentUser, $ionicPopup, $ionicPlatform, $state, Timers, Geo) {
+	
+	$scope.$on('$ionicView.enter', function(e) {
+		$scope.grid = Geo.getNewGrid();
+		$scope.show = false;
+
+		if ($scope.grid != null){
+			console.log('-------------------------BUTTON CHANGE-------------------------------')
+			$scope.show = true;
+		};
+
+	})
+	
 	$scope.data = {};
 
 	$scope.data.elapsedTime = 0;
@@ -118,12 +130,14 @@ angular.module('chronos.controllers', [])
 
 	$scope.newTimer = function(){
 		console.log($scope.data.name+'  '+$scope.data.color)
-		Database.newTimer($scope.data.name,$scope.data.color);
+		Timers.newTimer($scope.data.name,$scope.data.color, $scope.grid, $scope.data.gridName);
+		Geo.setNewGrid(null);
+		$scope.grid = null;
+		$scope.data.name = null;
 	}
 
-	$scope.signOut = function(){
-	$window.location.reload();  
-		$state.go('login');  
+	$scope.test = function(){
+	console.log(Geo.getNewGrid()); 
 }
 
    
@@ -136,13 +150,13 @@ angular.module('chronos.controllers', [])
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock,Database, Notifications) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock, Notifications, Geo) {
 	// With the new view caching in Ionic, Controllers are only called
 	// when they are recreated or on app start, instead of every page change.
 	// To listen for when this page is active (for example, to refresh data),
 	// listen for the $ionicView.enter event:
 	//
-		$scope.$on('$ionicView.loaded', function(e) {
+		$scope.$on('$ionicView.enter', function(e) {
 			
 		});
 
@@ -158,7 +172,8 @@ angular.module('chronos.controllers', [])
 			});
 		
 	$scope.test2 = function(){	
-		console.log('short press triggered');			
+		var allGrids = Geo.getAllGrids()
+		console.log(allGrids);			
 	}
 
 	$scope.test = function(){	
@@ -330,7 +345,7 @@ angular.module('chronos.controllers', [])
 
 
 	
-
+	//STATS CONTROLLER
 	.controller('StatsCtrl', function($scope, $state,$window, Timers, Tools) {
 		$scope.signOut = function(){
 	$window.location.reload();  
@@ -396,7 +411,7 @@ angular.module('chronos.controllers', [])
 		console.log($scope.options);
 	}
 })
-
+//
 .controller('SettingsCtrl', function($scope, $state, $window, $ionicPopup, $cordovaLocalNotification, $ionicPlatform, Auth){
 
  $ionicPlatform.ready(function () {
@@ -466,7 +481,7 @@ $scope.signOut = function(){
 
 })
 
-.controller('MapCtrl', function($scope, $cordovaGeolocation, $state) {
+.controller('MapCtrl', function($scope, $cordovaGeolocation, $state, Geo) {
   var options = {timeout: 30000, maximumAge: 0, enableHighAccuracy: true};
   var latLng;
   var marker;
@@ -570,7 +585,17 @@ $scope.signOut = function(){
 //   }
 
 $scope.done = function(){
-	console.log("Map set");		
+	var grid = {
+		lat: userMarker.getPosition().lat(),
+		lng: userMarker.getPosition().lng(),
+		radius: $scope.radius
+	}
+
+	if (grid != null){
+	Geo.setNewGrid(grid);
+	}
+
+	console.log(grid);		
     $state.go('tab.new');
   }
 

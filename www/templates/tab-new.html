@@ -32,18 +32,48 @@
 				</div>
 			</label>
 
+			<div class="item item-divider">Add location</div>
 
-		</div>
-		<div>
-			<button ng-click="newTimer()" class="button-block padding add-button">Add</button>
-		</div>
 
-		<!--MAP-->
-		
-		<div class=" has-header padding">
+			<label class="item item-input item-floating-label">
+				<span class="input-label">Name</span>
+				<input ng-model="data.gridName" type="text" placeholder="Location Name">
+			</label>
+
+				<label class="item item-input item-select ">
+				<div class="input-label ">
+					Locations
+				</div>
+				<select>
+					<option selected>Doesn't work yet</option>
+					<option >Doesn't work yet</option>
+					<option>Doesn't work yet</option>
+					
+				</select>
+			</label>
+
+			<!--MAP-->
+		<div class="padding">
 		<button class="button round button-energized map-button"  ng-click="map()">New Location</button>
 		</div>
 
+		<div class="item item-divider white text-center red" ng-show="!show">Location not set yet</div>
+		<div class="item item-divider white text-center green" ng-show="show">Location set!</div>
+		
+
+		</div>
+	
+
+		
+		
+
+
+			<div>
+			<button ng-click="newTimer()" class="button-block padding add-button">Add</button>
+		</div>
+		<!--<div>
+			<button ng-click="test()" class="button-block padding add-button">test fire</button>
+		</div>-->
 
 	</ion-content>
 </ion-view>
