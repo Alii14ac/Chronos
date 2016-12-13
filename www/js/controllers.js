@@ -150,15 +150,25 @@ angular.module('chronos.controllers', [])
 //NEW CONTROLLER END
 
 //TIMERS CONTROLLER
-	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock, Notifications, Geo, $cordovaGeolocation) {
+	.controller('TimersCtrl', function($scope, $ionicFilterBar, $ionicPopup, $state, $window, $interval,  CurrentUser, Timers, Clock, Notifications, Geo, $cordovaGeolocation, $cordovaLocalNotification) {
 // this controller has become quite cluttered
 
 		$scope.$on('$ionicView.enter', function(e) {
+			$scope.allGrids = Geo.getAllGrids();
 
+			$scope.allGrids.$loaded()
+					.then(function(){
+						// access data here;
+					//  console.log($scope.allGrids);
+
+					 //clear tracking
+
+
+					});
 		});
 
 	$scope.timers = Timers.all();
-
+	$scope.smartTracking = { checked: false };
 	//on load - set elapsed time
 	$scope.timers.$loaded()
 			.then(function(){
@@ -168,6 +178,22 @@ angular.module('chronos.controllers', [])
 				}
 			});
 
+
+
+			$scope.smartToogle = function(){
+				console.log("toogle reached"+$scope.smartTracking.checked);
+				if ($scope.smartTracking.checked == true) {
+					$scope.startTracking();
+				}else if ($scope.smartTracking.checked == false) {
+					if ($scope.watch) {
+						$scope.watch.clearWatch();
+						$scope.watch = null;
+						$scope.displayPosition = null;
+					}
+				}
+			}
+
+			// TRACKING location
 			$scope.displayPosition = null;
 
 			$scope.mapOptions = {timeout: 30000, maximumAge: 0, enableHighAccuracy: true};
@@ -177,44 +203,83 @@ angular.module('chronos.controllers', [])
 	    $scope.watch = $cordovaGeolocation.watchPosition($scope.mapOptions);
 	    $scope.watch.then(null,
 	    function(error){
-	      console.log("Could not get location");
+
 				$scope.displayPosition ="Could not get location"
 	    }, function(position){
 
 				var lat = position.coords.latitude;
 				var lng = position.coords.longitude;
 
-				console.log('current position is '+lat+' and '+lng);
 				$scope.displayPosition = String('current position is '+lat+' and '+lng);
 
-	      // latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-	      //
-	      // pathCoords.push(latLng);
-	      // $scope.map.panTo(latLng);
-	      // marker.setPosition(latLng);
-				//
-	      // path = new google.maps.Polyline({
-	      //   path: pathCoords,
-	      //   geodesic: true,
-	      //   strokeColor: '#0099cc',
-	      //   strokeOpacity: 0.8,
-	      //   strokeWeight: 2
-	      // });
-				//
-	      // path.setMap($scope.map);
+				//check if user is in a timer grid
+				for (var i = 0 ; i < $scope.allGrids.length ; ++i){
+
+					var radiusString = String('0.000'+$scope.allGrids[i].radius);
+					var radius = Number(radiusString);
+
+					var minLat = $scope.allGrids[i].lat - radius;
+					var maxLat = $scope.allGrids[i].lat + radius;
+					var minLng = $scope.allGrids[i].lng - radius;
+					var maxLng = $scope.allGrids[i].lng + radius;
+
+					//  console.log(minLat+' '+maxLat+' '+minLng+' '+maxLng);
+
+					//if within raduis
+					if ((lat > minLat && lat < maxLat) && (lng > minLng && lng < maxLng)) {
+
+
+						console.log($scope.allGrids[i].$id);
+						console.log($scope.allGrids[i].name);
+						$scope.inGrid($scope.allGrids[i].$id , $scope.allGrids[i].name);
+
+					// 	var alertPopup=$ionicPopup.alert({
+					// 	title: 'within raduis!!',
+					// 	template: 'Coming soon'
+					// });
+
+				}
+
+				}
+
+
 	    });
 	  }
 
 
-	// $scope.startTracking = function(){
-	// 	var options = {timeout: 30000, maximumAge: 0, enableHighAccuracy: true};
-	//
-	// }
+  // actions for when a user is in grid
+	$scope.inGrid = function(gridUid, gridName){
 
+		for (var i = 0 ; i < $scope.timers.length ; ++i){
+
+			if ($scope.timers[i].locations.locationKey == gridUid){
+				console.log('notification reached');
+
+				if ($scope.activeTimer != $scope.timers[i].$id) {
+
+					$cordovaLocalNotification.schedule({
+	            id: "1",
+	            // at: alarmTime,
+	            message: gridName+": "+$scope.timers[i].name+" started",
+	            title: "Touch to cancel",
+	            autoCancel: true,
+	            // sound: null
+	        }).then(function () {
+	        });
+
+					$scope.moveItem($scope.timers[i], i , 0 );
+				}
+
+			}
+
+		}
+
+	}
 
 	$scope.test2 = function(){
-		var allGrids = Geo.getAllGrids()
-		console.log(allGrids);
+
+		console.log($scope.allGrids);
+
 	}
 
 	$scope.test = function(){
@@ -253,7 +318,7 @@ angular.module('chronos.controllers', [])
 
 		}
 
-	// -------- NG-CLICK --------------------
+
 	$scope.moveItem = function(item, fromIndex, toIndex) {
     //Move the item in the array
     $scope.timers.splice(fromIndex, 1);
@@ -264,6 +329,8 @@ angular.module('chronos.controllers', [])
 	$scope.clock(0);
 
   	};
+
+		$scope.activeTimer = null;
 
 	//TIME FUNCTIONS
 		$scope.clock = function(index){
@@ -298,6 +365,7 @@ angular.module('chronos.controllers', [])
 			if($scope.timers[index].runClock==null)
 			{
 				console.log("timer started");
+				$scope.activeTimer = $scope.timers[index].$id;
 				$scope.timers[index].runClock = $interval(displayTime, 1000);
 				$scope.timers[index].state = 1;
 
@@ -309,6 +377,7 @@ angular.module('chronos.controllers', [])
 			$scope.displayElapsed(index);
 			$scope.timers[index].runClock=null;
 			$scope.timers[index].state = 0;
+			$scope.activeTimer = null;
 			//call to add time function
 			Timers.addTime($scope.timers[index].counter-1 , $scope.timers[index].$id);
 
@@ -498,7 +567,6 @@ angular.module('chronos.controllers', [])
             autoCancel: true,
             // sound: null
         }).then(function () {
-            console.log("The notification has been set");
         });
     };
 
