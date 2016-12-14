@@ -257,17 +257,19 @@ angular.module('chronos.controllers', [])
 
 				if ($scope.activeTimer != $scope.timers[i].$id) {
 
+					$scope.moveItem($scope.timers[i], i , 0 );
+
 					$cordovaLocalNotification.schedule({
 	            id: "1",
 	            // at: alarmTime,
-	            message: gridName+": "+$scope.timers[i].name+" started",
-	            title: "Touch to cancel",
+	            message: 'Touch to cancel',
+	            title: gridName+": "+$scope.timers[i].name+" started",
 	            autoCancel: true,
 	            // sound: null
 	        }).then(function () {
 	        });
 
-					$scope.moveItem($scope.timers[i], i , 0 );
+
 				}
 
 			}
@@ -631,6 +633,7 @@ $scope.signOut = function(){
 		console.log('radus changed '+ value);
 		$scope.radius = value;
 		userCircle.setRadius(Number(value));
+		userCircle.setRadius(Number($scope.radius));
 
 	}
 
@@ -659,39 +662,10 @@ $scope.signOut = function(){
 });
 
   }, function(error){
-    console.log("Could not get location");
+    console.log("Could not gset radius");
   });
 
-//   $scope.startTracking = function(){
-//     $scope.watch = $cordovaGeolocation.watchPosition(options);
-//     $scope.watch.then(null,
-//     function(error){
-//       console.log("Could not get location");
-//     }, function(position){
-//       latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
-//       pathCoords.push(latLng);
-//       $scope.map.panTo(latLng);
-//       marker.setPosition(latLng);
-
-//       path = new google.maps.Polyline({
-//         path: pathCoords,
-//         geodesic: true,
-//         strokeColor: '#0099cc',
-//         strokeOpacity: 0.8,
-//         strokeWeight: 2
-//       });
-
-//       path.setMap($scope.map);
-//     });
-//   }
-
-//   $scope.stopTracking = function(){
-//     $scope.watch.clearWatch();
-//     $scope.watch = null;
-//     path.setMap(null);
-//     pathCoords = [];
-//   }
 
 $scope.done = function(){
 	var grid = {
